@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to opennaijR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to opennaijR</h1>
+
+
+
+<div style="height: 45px;">
+
+</div>
+<p><strong><em>opennaijR</em></strong> is a reproducible macroeconomic
+data engineering framework for Africa. It gives you direct programmatic
+access to official economic data from central banks and national
+statistics bureaus – starting with Nigeria and expanding continent-wide.
+You ask for a dataset by name. opennaijR connects to the source, cleans
+the result, and returns a tidy, analysis-ready object. Every
+transformation is recorded so your work is fully reproducible from the
+moment data enters your workflow.</p>
+<div id="getting-started" class="section level1">
+<h1>Getting Started</h1>
+<p><code>opennaijR</code> helps you access Nigerian public data (like
+inflation, exchange rates, GDP, etc.) in just <strong>three simple
+steps</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Load OpennaijR Package</strong></li>
+<li><strong>Discover what datasets are available</strong></li>
+<li><strong>Fetch the dataset you need</strong></li>
+</ol>
+<p>Let’s walk through this step-by-step.</p>
+<div id="step-1-load-the-package" class="section level2">
+<h2>Step 1: Load the Package</h2>
+<p>Before doing anything, load the package:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(opennaijR)</span></code></pre></div>
+<p>That makes all <code>opennaijR functions</code> available in your R
+session.</p>
+</div>
+</div>
+<div id="step-2-discover-available-datasets" class="section level1">
+<h1>Step 2: Discover Available Datasets</h1>
+<p>Think of <code>discover_datasets()</code> as a <strong>catalog of
+datasets</strong>.</p>
+<p><code>discover_datasets()</code> shows you what Nigerian datasets are
+available and where they come from — so you can decide what to analyze
+next. Just like browsing a store before buying something, this function
+shows you:</p>
+<ul>
+<li>Dataset names</li>
+<li>Dataset IDs</li>
+<li>Data source (e.g., CBN)</li>
+<li>Alternative names (aliases)</li>
+<li>Available variables (columns you can request)</li>
+</ul>
+<p>Run:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">discover_datasets</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 21 × 5
+##    dataset_key                dataset_id     source aliases variables
+##    &lt;chr&gt;                      &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;    
+##  1 inflation_ng               cbn_inflation  CBN    inflat… headline…
+##  2 exchange_rates             cbn_exchange_… CBN    exchan… buying_r…
+##  3 nfem_exchange_rates        cbn_nfem_rates CBN    nfem, … closing,…
+##  4 monthly_avg_exchange_rates cbn_monthly_a… CBN    monthl… ifem_dol…
+##  5 crude_oil                  cbn_crude_oil  CBN    crude … price_bo…
+##  6 daily_crude_oil            cbn_daily_cru… CBN    daily … price_bo…
+##  7 external_reserves          cbn_external_… CBN    extern… gross_re…
+##  8 money_credit               cbn_money_cre… CBN    money … broad_mo…
+##  9 money_market               cbn_money_mar… CBN    money … interban…
+## 10 interbank_rates            cbn_interbank… CBN    interb… rate_typ…
+## # ℹ 11 more rows</code></pre>
+<p>To see the full list in R console use ’discover_datasets() |&gt;
+print(n = Inf)`</p>
+<div id="what-youll-see" class="section level3">
+<h3>What You’ll See</h3>
+<p>A clean table with columns like:</p>
+<table>
+<thead>
+<tr class="header">
+<th>dataset_key</th>
+<th>dataset_id</th>
+<th>source</th>
+<th>aliases</th>
+<th>variables</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+<div id="why-this-is-important" class="section level3">
+<h3>Why This Is Important</h3>
+<p>Instead of guessing dataset names, you can:</p>
+<ul>
+<li>See what datasets exist</li>
+<li>Search by keyword</li>
+<li>Check what variables are available</li>
+</ul>
+</div>
+<div id="search-for-a-specific-dataset" class="section level3">
+<h3>Search for a Specific Dataset</h3>
+<p>If you’re looking for exchange rate data:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">discover_datasets</span>(<span class="at">dataset =</span> <span class="st">&quot;exchange&quot;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 5
+##   dataset_key                dataset_id      source aliases variables
+##   &lt;chr&gt;                      &lt;chr&gt;           &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;    
+## 1 exchange_rates             cbn_exchange_r… CBN    exchan… buying_r…
+## 2 nfem_exchange_rates        cbn_nfem_rates  CBN    nfem, … closing,…
+## 3 monthly_avg_exchange_rates cbn_monthly_av… CBN    monthl… ifem_dol…</code></pre>
+<p>This filters the catalog to only datasets that match “exchange”.</p>
+<div id="search-within-a-specific-source" class="section level4">
+<h4>Search Within a Specific Source</h4>
+<p>If you want to narrow your search to a particular data source (like
+CBN), you can combine source and dataset.</p>
+<p>For example, to find inflation datasets from CBN only:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">discover_datasets</span>(<span class="at">source =</span> <span class="st">&quot;cbn&quot;</span>, <span class="at">dataset =</span> <span class="st">&quot;inflation&quot;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 5
+##   dataset_key  dataset_id    source aliases                 variables
+##   &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;                   &lt;chr&gt;    
+## 1 inflation_ng cbn_inflation CBN    inflation, inflation r… headline…</code></pre>
+<p>This tells opennaijR:</p>
+<p>Look only inside the CBN source</p>
+<p>Return datasets that match “inflation”</p>
+</div>
+<div id="why-this-is-useful" class="section level4">
+<h4>Why This Is Useful</h4>
+<p>Instead of scrolling through everything, you can:</p>
+<p>Search by keyword</p>
+<p>Limit by source</p>
+<p>Quickly discover the exact dataset you need</p>
+<p>Think of it like using filters on an online store:</p>
+<p>dataset = “inflation” → Search bar</p>
+<p>source = “cbn” → Store category filter</p>
+</div>
+</div>
+</div>
+<div id="step-3-fetch-data" class="section level1">
+<h1>Step 3: Fetch Data</h1>
+<p>Once you know the dataset name, fetching data is very simple.</p>
+<p>To get exchange rates from the Central Bank of Nigeria (CBN):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>exchange_rates <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>)</span></code></pre></div>
+<pre><code>## 📦 Loading cached CBN data from pins</code></pre>
+<p>That’s it.</p>
+<p>You now have the data stored in:</p>
+<p><code>exchange_rates</code></p>
+<div id="what-happens-behind-the-scenes" class="section level2">
+<h2>What Happens Behind the Scenes?</h2>
+<p>When you run:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>)</span></code></pre></div>
+<p>opennaijR automatically:</p>
+<ol style="list-style-type: decimal">
+<li>Builds a data request</li>
+<li>Checks if you already downloaded it before (cache system)</li>
+<li>Downloads fresh data if needed</li>
+<li>Cleans and standardizes the data</li>
+<li>Saves it for faster reuse next time</li>
+</ol>
+<p>So next time you run the same request, it loads instantly.</p>
+<p>You don’t need to manage any of this manually.</p>
+</div>
+<div id="optional-filter-your-data" class="section level2">
+<h2>Optional: Filter Your Data</h2>
+<p>You can refine your request.</p>
+<div id="select-specific-variables" class="section level3">
+<h3>Select specific variables:</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>, <span class="at">variables =</span> <span class="fu">c</span>(<span class="st">&quot;currency&quot;</span>, <span class="st">&quot;buying_rate&quot;</span>))</span></code></pre></div>
+<pre><code>## 📦 Loading cached CBN data from pins</code></pre>
+<pre><code>## &lt;opennaijR table&gt;
+## Rows: 60449  Columns: 2 
+## 
+##              currency buying_rate
+## 1                 CFA      2.4365
+## 2       YUAN/RENMINBI    201.5717
+## 3        DANISH KRONA    215.4961
+## 4                EURO   1610.2828
+## 5                 YEN      8.8168
+## 6               RIYAL    370.9318
+## 7  SOUTH AFRICAN RAND     83.4325
+## 8                 SDR   1900.2897
+## 9         SWISS FRANC   1779.6953
+## 10    POUNDS STERLING   1858.6612</code></pre>
+</div>
+<div id="select-a-date-range" class="section level3">
+<h3>Select a date range:</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>, <span class="at">from =</span> <span class="st">&quot;2020-01-01&quot;</span>, <span class="at">to =</span> <span class="st">&quot;2023-12-31&quot;</span>)</span></code></pre></div>
+<pre><code>## 📦 Loading cached CBN data from pins</code></pre>
+<pre><code>## &lt;opennaijR table&gt;
+## Rows: 60449  Columns: 5 
+## 
+##              currency buying_rate central_rate selling_rate
+## 1                 CFA      2.4365       2.4465       2.4565
+## 2       YUAN/RENMINBI    201.5717     201.6441     201.7165
+## 3        DANISH KRONA    215.4961     215.5735     215.6509
+## 4                EURO   1610.2828    1610.8611    1611.4394
+## 5                 YEN      8.8168       8.8199       8.8231
+## 6               RIYAL    370.9318     371.0651     371.1983
+## 7  SOUTH AFRICAN RAND     83.4325      83.4625      83.4925
+## 8                 SDR   1900.2897    1900.9721    1901.6546
+## 9         SWISS FRANC   1779.6953    1780.3344    1780.9735
+## 10    POUNDS STERLING   1858.6612    1859.3287    1859.9962
+##          date
+## 1  2026-03-06
+## 2  2026-03-06
+## 3  2026-03-06
+## 4  2026-03-06
+## 5  2026-03-06
+## 6  2026-03-06
+## 7  2026-03-06
+## 8  2026-03-06
+## 9  2026-03-06
+## 10 2026-03-06</code></pre>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>See available datasets</td>
+<td><code>discover_manifest()</code></td>
+</tr>
+<tr class="even">
+<td>Search for a dataset</td>
+<td><code>discover_manifest(dataset = &quot;keyword&quot;)</code></td>
+</tr>
+<tr class="odd">
+<td>Fetch CBN data</td>
+<td><code>cbn(&quot;dataset_name&quot;)</code></td>
+</tr>
+<tr class="even">
+<td>Filter by date</td>
+<td><code>from</code>, <code>to</code></td>
+</tr>
+<tr class="odd">
+<td>Select columns</td>
+<td><code>variables</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="mental-model" class="section level2">
+<h2>Mental Model</h2>
+<p>Think of opennaijR like this:</p>
+<ul>
+<li><code>discover_datasets()</code> → <strong>Browse the data
+catalog</strong></li>
+<li><code>cbn()</code> “192” <strong>Download the dataset you
+want</strong></li>
+</ul>
+<p>Simple. Clean. Nigerian data made accessible.</p>
+</div>
+</div>
+<div id="filter-and-project-data-clean-and-focus" class="section level1">
+<h1>Filter and Project Data (Clean and Focus)</h1>
+<p>After fetching a dataset, it often contains:</p>
+<ul>
+<li>Many rows</li>
+<li>Many columns</li>
+</ul>
+<p>But most times, you don’t need everything.</p>
+<p>You may want to:</p>
+<ul>
+<li>Filter to specific rows (e.g., only USD)</li>
+<li>Keep only certain columns</li>
+<li>Rename them to something cleaner</li>
+<li>Reorder them for reporting</li>
+<li>Document why you did this</li>
+</ul>
+<p>That’s what <code>apply_projection()</code> is for.</p>
+<p>Think of it as:</p>
+<blockquote>
+<p>Filtering and reshaping your dataset for your specific task.</p>
+</blockquote>
+<div id="example-focus-only-on-us-dollar-exchange-rates" class="section level2">
+<h2>Example: Focus Only on US Dollar Exchange Rates</h2>
+<p>First, suppose we already fetched exchange rates:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>exchange_rates <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>)</span></code></pre></div>
+<p>Now we will:</p>
+<ul>
+<li>Keep only <strong>US Dollar</strong></li>
+<li>Select important columns</li>
+<li>Rename them</li>
+<li>Reorder them</li>
+<li>Record our reason</li>
+</ul>
+<p>All in one step:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>usd_rates <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  exchange_rates,</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">filter =</span> currency <span class="sc">==</span> <span class="st">&quot;US DOLLAR&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;currency&quot;</span>, <span class="st">&quot;buying_rate&quot;</span>, <span class="st">&quot;central_rate&quot;</span>, <span class="st">&quot;selling_rate&quot;</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="at">buying  =</span> <span class="st">&quot;buying_rate&quot;</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="at">central =</span> <span class="st">&quot;central_rate&quot;</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    <span class="at">selling =</span> <span class="st">&quot;selling_rate&quot;</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>  ),</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>  <span class="at">order  =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;currency&quot;</span>, <span class="st">&quot;buying&quot;</span>, <span class="st">&quot;central&quot;</span>, <span class="st">&quot;selling&quot;</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Focus on USD rates&quot;</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>)</span></code></pre></div>
+<div id="what-just-happened" class="section level3">
+<h3>What Just Happened?</h3>
+<p>Let’s break it down in simple terms:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>filter</code></td>
+<td>Keeps only rows matching a condition</td>
+</tr>
+<tr class="even">
+<td><code>cols</code></td>
+<td>Keeps only selected columns</td>
+</tr>
+<tr class="odd">
+<td><code>rename</code></td>
+<td>Gives columns cleaner names</td>
+</tr>
+<tr class="even">
+<td><code>order</code></td>
+<td>Rearranges column order</td>
+</tr>
+<tr class="odd">
+<td><code>reason</code></td>
+<td>Records why you made this transformation</td>
+</tr>
+</tbody>
+</table>
+<p>So instead of technical column names like:</p>
+<pre><code>ratedate
+buying_rate
+central_rate</code></pre>
+<p>You now have clean, readable names:</p>
+<pre><code>date
+buying
+central
+selling</code></pre>
+</div>
+</div>
+<div id="view-the-result" class="section level2">
+<h2>View the Result</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">head</span>(usd_rates)</span></code></pre></div>
+<pre><code>## &lt;opennaijR table&gt;
+## Rows: 6  Columns: 5 
+## 
+##          date  currency   buying  central  selling
+## 11 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256
+## 24 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447
+## 37 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095
+## 50 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292
+## 63 2026-03-02 US DOLLAR 1377.025 1377.525 1378.025
+## 75 2026-02-27 US DOLLAR 1362.395 1362.895 1363.395</code></pre>
+<p>Now your dataset is:</p>
+<ul>
+<li>Focused (USD only)</li>
+<li>Clean</li>
+<li>Easy to read</li>
+<li>Ready for plotting or reporting</li>
+</ul>
+<hr />
+<div id="why-apply_projection-is-special" class="section level3">
+<h3>Why <code>apply_projection()</code> Is Special</h3>
+<p>Unlike normal filtering or column selection, this function:</p>
+<p>cat(“705 Done!”) Keeps the <code>opennaijR_tbl</code> class cat(“705
+Done!”) Tracks what you changed cat(“705 Done!”) Saves a transformation
+history</p>
+<p>You can inspect the history:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">attr</span>(usd_rates, <span class="st">&quot;projection_manifest&quot;</span>)</span></code></pre></div>
+<pre><code>## [[1]]
+## [[1]]$timestamp
+## [1] &quot;2026-03-07 16:33:57 WAT&quot;
+## 
+## [[1]]$action
+## [1] &quot;apply_projection&quot;
+## 
+## [[1]]$filter
+## [1] &quot;~currency == \&quot;US DOLLAR\&quot;&quot;
+## 
+## [[1]]$kept
+## [1] &quot;date&quot;         &quot;currency&quot;     &quot;buying_rate&quot;  &quot;central_rate&quot;
+## [5] &quot;selling_rate&quot;
+## 
+## [[1]]$renamed
+##         buying        central        selling 
+##  &quot;buying_rate&quot; &quot;central_rate&quot; &quot;selling_rate&quot; 
+## 
+## [[1]]$ordered
+## [1] &quot;date&quot;     &quot;currency&quot; &quot;buying&quot;   &quot;central&quot;  &quot;selling&quot; 
+## 
+## [[1]]$reason
+## [1] &quot;Focus on USD rates&quot;</code></pre>
+<p>This shows:</p>
+<ul>
+<li>When the transformation happened</li>
+<li>What filter was applied</li>
+<li>What columns were kept</li>
+<li>What was renamed</li>
+<li>The reason you provided</li>
+</ul>
+<p>That makes your analysis <strong>transparent and
+reproducible</strong>.</p>
+</div>
+</div>
+<div id="derive-a-new-measure-create-insight" class="section level2">
+<h2>Derive a New Measure (Create Insight)</h2>
+<p>After filtering and cleaning your data, the next step is often to
+create <strong>new variables</strong>.</p>
+<p>For example:</p>
+<ul>
+<li>Year-on-year change</li>
+<li>Month-to-month change</li>
+<li>Percentage growth</li>
+<li>Gaps between variables</li>
+<li>Ratios</li>
+</ul>
+<p>That’s what <code>derive_measure()</code> is for.</p>
+<p>Think of it as:</p>
+<blockquote>
+<p>Creating new economic indicators from existing data.</p>
+</blockquote>
+</div>
+<div id="example-compute-percentage-change-in-usd-rates" class="section level2">
+<h2>Example: Compute Percentage Change in USD Rates</h2>
+<p>Suppose we already prepared our dataset:</p>
+<p><code>usd_rates</code></p>
+<p>Now we want to compute the <strong>percentage change</strong> in
+exchange rates.</p>
+<p>We can do:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>usd_change <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  usd_rates,</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">pct_change =</span> (buying <span class="sc">-</span> <span class="fu">lag</span>(buying)) <span class="sc">/</span> <span class="fu">lag</span>(buying) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Compute daily percentage change in USD buying rate&quot;</span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>head(usd_rates)</p>
+</div>
+<div id="what-just-happened-1" class="section level2">
+<h2>What Just Happened?</h2>
+<p>Let’s break it down:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pct_change = ...</code></td>
+<td>Creates a new column</td>
+</tr>
+<tr class="even">
+<td><code>lag(buying)</code></td>
+<td>Uses previous value</td>
+</tr>
+<tr class="odd">
+<td><code>* 100</code></td>
+<td>Converts to percentage</td>
+</tr>
+<tr class="even">
+<td><code>reason</code></td>
+<td>Documents why we created it</td>
+</tr>
+</tbody>
+</table>
+<p>So now your dataset contains a new column:</p>
+<p><code>pct_change</code></p>
+<p>That tells you how much the USD rate changed compared to the previous
+period.</p>
+</div>
+<div id="view-the-result-1" class="section level2">
+<h2>View the Result</h2>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">head</span>(usd_change)</span></code></pre></div>
+<pre><code>## &lt;opennaijR table&gt;
+## Rows: 6  Columns: 6 
+## 
+##          date  currency   buying  central  selling pct_change
+## 11 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256          0
+## 24 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447          0
+## 37 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095          0
+## 50 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292          0
+## 63 2026-03-02 US DOLLAR 1377.025 1377.525 1378.025          0
+## 75 2026-02-27 US DOLLAR 1362.395 1362.895 1363.395          0</code></pre>
+<p>You now have:</p>
+<ul>
+<li>Original exchange rate columns</li>
+<li>A new derived column (<code>pct_change</code>)</li>
+<li>A recorded derivation history</li>
+</ul>
+<div id="why-derive_measure-is-special" class="section level4">
+<h4>Why <code>derive_measure()</code> Is Special</h4>
+<p>Unlike just writing:</p>
+<p><code>usd_rates$pct_change &lt;- ...</code></p>
+<p><code>derive_measure()</code>:</p>
+<p>cat(“705 Done!”) Keeps the <code>opennaijR_tbl</code> class cat(“705
+Done!”) racks the expression used cat(“705 Done!”) Records when it was
+created cat(“705 Done!”) Stores your reason</p>
+<p>You can inspect the derivation history:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">attr</span>(usd_change, <span class="st">&quot;derive_manifest&quot;</span>)</span></code></pre></div>
+<pre><code>## [[1]]
+## [[1]]$timestamp
+## [1] &quot;2026-03-07 16:33:57 WAT&quot;
+## 
+## [[1]]$action
+## [1] &quot;derive_measure&quot;
+## 
+## [[1]]$derived
+## [1] &quot;pct_change&quot;
+## 
+## [[1]]$expressions
+##                                  pct_change 
+## &quot;~(buying - lag(buying))/lag(buying) * 100&quot; 
+## 
+## [[1]]$reason
+## [1] &quot;Compute daily percentage change in USD buying rate&quot;</code></pre>
+<p>This makes your analysis:</p>
+<ul>
+<li>Transparent</li>
+<li>Reproducible</li>
+<li>Auditable</li>
+</ul>
+<p>Very important for economic research.</p>
+</div>
+</div>
+<div id="you-can-derive-multiple-measures-at-once" class="section level2">
+<h2>You Can Derive Multiple Measures at Once</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>usd_extended <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  usd_rates,</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">pct_change =</span> (buying <span class="sc">-</span> <span class="fu">lag</span>(buying)) <span class="sc">/</span> <span class="fu">lag</span>(buying) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="at">spread =</span> selling <span class="sc">-</span> buying,</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Analyze volatility and bid-ask spread&quot;</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>Now you created:</p>
+<ul>
+<li>Percentage change</li>
+<li>Bid-ask spread</li>
+</ul>
+<p>In one clean step.</p>
+</div>
+<div id="mental-model-1" class="section level2">
+<h2>Mental Model</h2>
+Your workflow now becomes:
+<div class="workflow">
+<p><code>discover_datasets()</code> <span class="arrow">→</span>
+<code>cbn()</code> <span class="arrow">→</span>
+<code>apply_projection()</code> <span class="arrow">→</span>
+<code>derive_measure()</code></p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

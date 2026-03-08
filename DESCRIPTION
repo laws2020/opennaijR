@@ -1,0 +1,52 @@
+Package: opennaijR
+Title: Reproducible Macroeconomic Data Engineering for Africa
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Lawrence", "Garba",
+           email = "laws.garba@gmail.com",
+           role  = c("aut", "cre"),
+           comment = c(ORCID = "")),
+    person("Infosights Consulting",
+           email = "infosights.yo@gmail.com",
+           role  = "fnd")
+    )
+Description: Provides programmatic access to official macroeconomic data
+    from African central banks and national statistics bureaus, starting
+    with the Central Bank of Nigeria (CBN). Automates the retrieval,
+    cleaning, and transformation of institutional datasets into
+    analysis-ready R objects. Includes tools for schema management,
+    feature engineering, and reproducible audit trails.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    httr,
+    jsonlite,
+    pins,
+    lubridate,
+    dplyr,
+    tidyr,
+    tibble,
+    ggplot2,
+    scales,
+    rlang,
+    digest,
+    zoo,
+    graphics,
+    grDevices,
+    utils
+Suggests:
+    data.table,
+    VIM,
+    uuid,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+URL: https://laws2020.github.io/opennaijR,
+    https://github.com/laws2020/opennaijR
+BugReports: https://github.com/laws2020/opennaijR/issues
+VignetteBuilder: knitr
+Config/testthat/edition: 3

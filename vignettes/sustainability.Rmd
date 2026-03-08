@@ -1,0 +1,145 @@
+---
+title: "Sustainability and Access"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sustainability and Access}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## The Problem We Are Solving
+
+Official African economic data is public in principle. In practice, getting it into a form you can analyse takes hours of manual work -- downloading spreadsheets, renaming columns, parsing inconsistent date formats, cross-referencing revisions. That friction discourages research, slows journalism, and weakens the evidence base for policy.
+
+opennaijR exists to eliminate that friction. It automates the path from official publication to analysis-ready R object.
+
+But automation infrastructure is not free to build or maintain.
+
+---
+
+## Why Infrastructure Has a Cost
+
+Every time you call `cbn("inflation")`, opennaijR has done the following work invisibly:
+
+- Identified the correct official endpoint
+- Written and maintained a parser for that institution's format
+- Built cleaning logic to produce consistent column names and date types
+- Set up local caching so repeat calls are instant
+- Monitored the source for format changes and updated accordingly
+
+Multiply that across dozens of institutions across multiple African countries and the maintenance burden is substantial. Connectors break when upstream formats change. New datasets require new engineering. Validation pipelines need ongoing attention.
+
+The sustainability model exists to fund that work -- not to charge for the data itself, which remains public and free.
+
+---
+
+## Our Commitment: Core Access Stays Open
+
+Students, independent researchers, journalists, and classroom users will always have free access to core datasets. This is non-negotiable. opennaijR was built to reduce barriers to African data, not create new ones.
+
+The distinction is between **data access** (always free) and **infrastructure services** (sustainably funded for high-demand users).
+
+---
+
+## Current Status: Early Access
+
+opennaijR is currently in early access. During this phase:
+
+- No API key is required
+- No rate limits are applied
+- All features are fully available
+- Community feedback is actively used to shape development
+
+This phase exists so that researchers, students, and analysts can use the package freely while the maintainers learn what is most valuable and where infrastructure investment is most needed.
+
+---
+
+## Planned Access Model
+
+As the project matures and regional coverage expands, a tiered access model will be introduced. The tiers are designed so that the users who derive the most professional or commercial value from the infrastructure contribute proportionally to its upkeep.
+
+### Community Access -- Free
+
+For students, independent researchers, and journalists.
+
+- Full access to core datasets
+- Standard rate limits
+- Community support via GitHub issues
+
+### Professional Access
+
+For analysts, data teams, startups, and consultancies that use opennaijR in production workflows.
+
+- Higher rate limits
+- Priority support
+- Early access to new connectors
+
+### Institutional Access
+
+For universities, financial institutions, central banks, and policy organisations that require scale and reliability.
+
+- Dedicated authentication keys
+- Guaranteed uptime agreements
+- Webhook-based data update notifications
+- Technical support and onboarding
+- Co-development of custom connectors
+
+---
+
+## How Authentication Will Work
+
+When subscription tiers are activated, the workflow will be straightforward:
+
+```
+1. User selects an access plan
+2. Secure payment is processed
+3. An API key is generated and delivered by email
+4. The key is registered inside R once:
+```
+
+```{r auth-example, eval=FALSE}
+opennaijR_login("your_api_key")
+```
+
+```
+5. Authenticated endpoints become available automatically
+```
+
+The key is stored securely in your R environment. You set it once per machine and it persists across sessions. No change to your existing analysis code is required -- authentication happens at the connection layer, not in your scripts.
+
+---
+
+## What Subscription Revenue Funds
+
+Every subscription contribution goes directly toward:
+
+- Maintaining existing connectors when upstream institutions change formats
+- Building new connectors for additional African countries and institutions
+- Infrastructure costs for caching and API reliability
+- Documentation, tutorials, and educational resources
+- Expanding validation pipelines to catch data quality issues automatically
+
+It does not fund anything other than the infrastructure that makes public data usable.
+
+---
+
+## The Bigger Vision
+
+opennaijR is one component of a larger goal: making African macroeconomic data as easy to access programmatically as data from the US Federal Reserve, the ECB, or the World Bank.
+
+Researchers in Accra, Lagos, Nairobi, and Johannesburg should be able to pull official data from their own central banks and statistics bureaus with the same ease that a researcher in New York pulls FRED data. That parity does not exist today. opennaijR is building toward it.
+
+Sustainability makes that vision durable. A project that cannot fund its own maintenance eventually collapses. One that is sustainably funded can expand, improve, and serve the African research community for the long term.
+
+---
+
+## Contact
+
+For questions about institutional access, partnership, or collaboration:
+
+**Lawrence Garba**
+laws.garba@gmail.com

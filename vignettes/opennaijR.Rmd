@@ -1,0 +1,461 @@
+
+---
+title: "Introduction to opennaijR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to opennaijR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<div style="height: 45px;"></div>
+
+***opennaijR*** is a reproducible macroeconomic data engineering framework
+for Africa. It gives you direct programmatic access to official economic
+data from central banks and national statistics bureaus -- starting with
+Nigeria and expanding continent-wide. You ask for a dataset by name.
+opennaijR connects to the source, cleans the result, and returns a
+tidy, analysis-ready object. Every transformation is recorded so your
+work is fully reproducible from the moment data enters your workflow.
+
+
+# Getting Started 
+
+`opennaijR` helps you access Nigerian public data (like inflation, exchange rates, GDP, etc.) in just **three simple steps**:
+
+1. **Load OpennaijR Package**
+2. **Discover what datasets are available**
+3. **Fetch the dataset you need**
+
+Let’s walk through this step-by-step.
+
+
+## Step 1: Load the Package
+
+Before doing anything, load the package:
+
+```{r loadPackage, warning=FALSE}
+library(opennaijR)
+```
+
+That makes all `opennaijR functions` available in your R session.
+
+
+# Step 2: Discover Available Datasets
+
+Think of `discover_datasets()` as a **catalog of datasets**.
+
+`discover_datasets()` shows you what Nigerian datasets are available and where they come from — so you can decide what to analyze next.
+Just like browsing a store before buying something, this function shows you:
+
+* Dataset names
+* Dataset IDs
+* Data source (e.g., CBN)
+* Alternative names (aliases)
+* Available variables (columns you can request)
+
+Run:
+
+```{r exploratory, warning=FALSE}
+discover_datasets()
+```
+
+To see the full list in R console use 'discover_datasets() |> print(n = Inf)`
+
+
+### What You’ll See
+
+A clean table with columns like:
+
+| dataset_key | dataset_id | source | aliases | variables |
+| ----------- | ---------- | ------ | ------- | --------- |
+
+
+### Why This Is Important
+
+Instead of guessing dataset names, you can:
+
+* See what datasets exist
+* Search by keyword
+* Check what variables are available
+
+
+### Search for a Specific Dataset
+
+If you're looking for exchange rate data:
+
+```{r searching, warning=FALSE}
+discover_datasets(dataset = "exchange")
+```
+
+This filters the catalog to only datasets that match “exchange”.
+
+#### Search Within a Specific Source
+
+If you want to narrow your search to a particular data source (like CBN), you can combine source and dataset.
+
+For example, to find inflation datasets from CBN only:
+
+```{r searching_within, warning=FALSE}
+discover_datasets(source = "cbn", dataset = "inflation")
+```
+
+This tells opennaijR:
+
+Look only inside the CBN source
+
+Return datasets that match “inflation”
+
+#### Why This Is Useful
+
+Instead of scrolling through everything, you can:
+
+Search by keyword
+
+Limit by source
+
+Quickly discover the exact dataset you need
+
+Think of it like using filters on an online store:
+
+dataset = "inflation" → Search bar
+
+source = "cbn" → Store category filter
+
+
+# Step 3: Fetch Data
+
+Once you know the dataset name, fetching data is very simple.
+
+To get exchange rates from the Central Bank of Nigeria (CBN):
+
+```{r fetchin_data, warning=FALSE}
+exchange_rates <- cbn("exchange_rates")
+```
+
+That’s it.
+
+You now have the data stored in:
+
+`exchange_rates`
+
+
+
+## What Happens Behind the Scenes?
+
+When you run:
+
+```{r behind_scene, warning=FALSE, eval=FALSE}
+cbn("exchange_rates")
+```
+
+opennaijR automatically:
+
+1. Builds a data request
+2. Checks if you already downloaded it before (cache system)
+3. Downloads fresh data if needed
+4. Cleans and standardizes the data
+5. Saves it for faster reuse next time
+
+So next time you run the same request, it loads instantly.
+
+You don’t need to manage any of this manually.
+
+
+## Optional: Filter Your Data
+
+You can refine your request.
+
+### Select specific variables:
+
+```{r selection, warning=FALSE}
+cbn("exchange_rates", variables = c("currency", "buying_rate"))
+```
+
+### Select a date range:
+
+```{r rang, warning=FALSE}
+cbn("exchange_rates", from = "2020-01-01", to = "2023-12-31")
+```
+
+
+## Summary
+
+| Task                   | Function                                 |
+| ---------------------- | ---------------------------------------- |
+| See available datasets | `discover_manifest()`                    |
+| Search for a dataset   | `discover_manifest(dataset = "keyword")` |
+| Fetch CBN data         | `cbn("dataset_name")`                    |
+| Filter by date         | `from`, `to`                             |
+| Select columns         | `variables`                              |
+
+
+## Mental Model
+
+Think of opennaijR like this:
+
+* `discover_datasets()` → **Browse the data catalog**
+* `cbn()` "\u2192" **Download the dataset you want**
+
+Simple. Clean. Nigerian data made accessible.
+
+
+
+# Filter and Project Data (Clean and Focus)  
+
+After fetching a dataset, it often contains:
+
+* Many rows
+* Many columns
+
+But most times, you don’t need everything.
+
+You may want to:
+
+* Filter to specific rows (e.g., only USD)
+* Keep only certain columns
+* Rename them to something cleaner
+* Reorder them for reporting
+* Document why you did this
+
+That’s what `apply_projection()` is for.
+
+Think of it as:
+
+> Filtering and reshaping your dataset for your specific task.
+
+
+## Example: Focus Only on US Dollar Exchange Rates
+
+First, suppose we already fetched exchange rates:
+
+```{r exchange_rates_fetch, eval=FALSE}
+exchange_rates <- cbn("exchange_rates")
+```
+
+Now we will:
+
+* Keep only **US Dollar**
+* Select important columns
+* Rename them
+* Reorder them
+* Record our reason
+
+All in one step:
+
+```{r project, warning=FALSE}
+usd_rates <- apply_projection(
+  exchange_rates,
+  filter = currency == "US DOLLAR",
+  cols   = c("date", "currency", "buying_rate", "central_rate", "selling_rate"),
+  rename = c(
+    buying  = "buying_rate",
+    central = "central_rate",
+    selling = "selling_rate"
+  ),
+  order  = c("date", "currency", "buying", "central", "selling"),
+  reason = "Focus on USD rates"
+)
+```
+
+
+### What Just Happened?
+
+Let’s break it down in simple terms:
+
+| Argument | What It Does                             |
+| -------- | ---------------------------------------- |
+| `filter` | Keeps only rows matching a condition     |
+| `cols`   | Keeps only selected columns              |
+| `rename` | Gives columns cleaner names              |
+| `order`  | Rearranges column order                  |
+| `reason` | Records why you made this transformation |
+
+So instead of technical column names like:
+
+```
+ratedate
+buying_rate
+central_rate
+```
+
+You now have clean, readable names:
+
+```
+date
+buying
+central
+selling
+```
+
+
+
+## View the Result
+
+```{r view_rates, warning=FALSE}
+head(usd_rates)
+```
+
+Now your dataset is:
+
+* Focused (USD only)
+* Clean
+* Easy to read
+* Ready for plotting or reporting
+
+---
+
+### Why `apply_projection()` Is Special
+
+Unlike normal filtering or column selection, this function:
+
+cat("\u2705 Done!\n") Keeps the `opennaijR_tbl` class
+cat("\u2705 Done!\n") Tracks what you changed
+cat("\u2705 Done!\n") Saves a transformation history
+
+You can inspect the history:
+
+```{r audit_trail, warning=FALSE}
+attr(usd_rates, "projection_manifest")
+```
+
+This shows:
+
+* When the transformation happened
+* What filter was applied
+* What columns were kept
+* What was renamed
+* The reason you provided
+
+That makes your analysis **transparent and reproducible**.
+
+
+## Derive a New Measure (Create Insight)
+
+After filtering and cleaning your data, the next step is often to create **new variables**.
+
+For example:
+
+* Year-on-year change
+* Month-to-month change
+* Percentage growth
+* Gaps between variables
+* Ratios
+
+That’s what `derive_measure()` is for.
+
+Think of it as:
+
+> Creating new economic indicators from existing data.
+
+
+## Example: Compute Percentage Change in USD Rates
+
+Suppose we already prepared our dataset:
+
+`usd_rates`
+
+Now we want to compute the **percentage change** in exchange rates.
+
+We can do:
+
+```{r}
+usd_change <- derive_measure(
+  usd_rates,
+  pct_change = (buying - lag(buying)) / lag(buying) * 100,
+  reason = "Compute daily percentage change in USD buying rate"
+)
+```
+
+head(usd_rates)
+
+## What Just Happened?
+
+Let’s break it down:
+
+| Component          | What It Does                |
+| ------------------ | --------------------------- |
+| `pct_change = ...` | Creates a new column        |
+| `lag(buying)`      | Uses previous value         |
+| `* 100`            | Converts to percentage      |
+| `reason`           | Documents why we created it |
+
+So now your dataset contains a new column:
+
+`pct_change`
+
+That tells you how much the USD rate changed compared to the previous period.
+
+
+## View the Result
+
+```{r}
+head(usd_change)
+```
+
+You now have:
+
+* Original exchange rate columns
+* A new derived column (`pct_change`)
+* A recorded derivation history
+
+
+#### Why `derive_measure()` Is Special
+
+Unlike just writing:
+
+` usd_rates$pct_change <- ...`
+
+`derive_measure()`:
+
+cat("\u2705 Done!\n") Keeps the `opennaijR_tbl` class
+cat("\u2705 Done!\n") racks the expression used
+cat("\u2705 Done!\n") Records when it was created
+cat("\u2705 Done!\n") Stores your reason
+
+You can inspect the derivation history:
+
+```{r}
+attr(usd_change, "derive_manifest")
+```
+
+This makes your analysis:
+
+* Transparent
+* Reproducible
+* Auditable
+
+Very important for economic research.
+
+
+## You Can Derive Multiple Measures at Once
+
+```{r}
+usd_extended <- derive_measure(
+  usd_rates,
+  pct_change = (buying - lag(buying)) / lag(buying) * 100,
+  spread = selling - buying,
+  reason = "Analyze volatility and bid-ask spread"
+)
+```
+
+Now you created:
+
+* Percentage change
+* Bid-ask spread
+
+In one clean step.
+
+## Mental Model
+
+Your workflow now becomes:
+<div class="workflow">
+  <code>discover_datasets()</code>
+  <span class="arrow">→</span>
+  <code>cbn()</code>
+  <span class="arrow">→</span>
+  <code>apply_projection()</code>
+  <span class="arrow">→</span>
+  <code>derive_measure()</code>
+</div>
+

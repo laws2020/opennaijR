@@ -1,0 +1,128 @@
+# ===============================
+# opennaijR pkgdown configuration
+# ===============================
+
+url: https://laws2020.github.io/opennaijR/
+
+favicon: false
+
+home:
+  title: "opennaijR"
+  description: "Reliable, cached, reproducible access to Nigerian economic and financial data"
+  strip_header: false
+
+template:
+  bootstrap: 5
+  assets: pkgdown
+  light-switch: true
+  default_style: dark
+  light:
+    theme: flatly
+  dark:
+    theme: darkly
+  logo: man/figures/opennaijR.png
+  bslib:
+    primary: "#0d6efd"
+    base_font:
+      google: "IBM Plex Sans"
+    heading_font:
+      google: "IBM Plex Sans"
+    code_font:
+      google: "JetBrains Mono"
+  include:
+    in_header: pkgdown/custom.css
+
+navbar:
+  structure:
+    left: [home, intro, reference, articles_menu, governance_menu, news_menu]
+    right: [search, lightswitch, github]
+
+  components:
+
+    articles_menu:
+      text: "Articles"
+      menu:
+        - text: "Schema & Projection"
+          href: articles/apply_projection.html
+        - text: "Feature Engineering"
+          href: articles/derive_measure.html
+        - text: "Macro Regimes"
+          href: articles/macro_regime_regression.html
+        - text: "Inflation Visuals"
+          href: articles/plot_inflation_shock.html
+        - text: "Inflation Charts"
+          href: articles/Inflation_Charts.html
+        - text: "Fetching with nga_cbn()"
+          href: articles/nga_cbn.html
+
+    news_menu:
+      text: "News"
+      menu:
+        - text: "Releases"
+        - text: "0.0.1.9000"
+          href: news/index.html#opennaijr-0019000
+        - text: "Changelog"
+          href: news/index.html
+
+    governance_menu:
+      text: "Governance"
+      menu:
+        - text: "Sustainability"
+          href: articles/sustainability.html
+        - text: "Legal"
+          href: articles/legal.html
+        - text: "Contributing"
+          href: articles/contributing.html
+        - text: "Data Sources"
+          href: articles/data-sources.html
+
+    github:
+      icon: fa-github
+      href: https://github.com/laws2020/opennaijR
+      aria-label: "GitHub repository"
+
+reference:
+  - title: "Data Access"
+    desc: >
+      Fetch and automatically clean official CBN data. These functions
+      connect directly to institutional endpoints, handle caching, and
+      return analysis-ready objects.
+    contents:
+      - nga_cbn
+      - cbn
+
+  - title: "Data Discovery"
+    desc: >
+      Explore what datasets and indicators are available before
+      fetching. Always start here if you are unsure of a dataset name.
+    contents:
+      - discover_datasets
+
+  - title: "Data Preparation"
+    desc: >
+      Clean, reshape, and augment your dataset after retrieval.
+      Use these functions to select columns, rename variables,
+      derive new indicators, and handle missing values.
+    contents:
+      - apply_projection
+      - derive_measure
+      - ng_fill_missing
+
+  - title: "Visualisation"
+    desc: >
+      Plot inflation trends and macroeconomic indicators.
+      These functions produce ready-to-use charts with no
+      manual formatting required.
+    contents:
+      - plot_inflation
+      - plot_inflation_shocks
+
+  - title: "Cache Management"
+    desc: "Manage local data storage to improve performance."
+    contents:
+      - starts_with("naijr_cache")
+
+development:
+  mode: auto
+  version_label: warning
+  version_tooltip: "This is a work-in progress version for opennaijR"

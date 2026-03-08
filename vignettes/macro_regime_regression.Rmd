@@ -1,0 +1,411 @@
+---
+title: "Macroeconomic Regime and Regression Analysis"
+author: "Lawrence Garba"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Macroeconomic Regime and Regression Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  eval     = FALSE
+)
+```
+
+## Overview
+
+This article walks through a complete macroeconomic research workflow using opennaijR — from raw data retrieval to econometric modelling. We will answer one central policy question:
+
+> **Is food inflation the primary driver of headline inflation in Nigeria, and can we quantify that relationship?**
+
+Along the way you will see how `apply_projection()`, `derive_measure()`, and base R modelling functions fit together into a reproducible pipeline.
+
+---
+
+## The Pipeline at a Glance
+
+```
+1. Retrieve       cbn()
+2. Clean schema   apply_projection()
+3. Engineer       derive_measure()
+4. Describe       table(), prop.table(), summary()
+5. Test           chisq.test(), cor.test()
+6. Model          lm(), glm()
+7. Reproduce      attr(..., "derive_manifest")
+```
+
+Each step feeds into the next. The manifest system ensures you can retrace every decision.
+
+---
+
+## Step 1 — Retrieve Data
+
+```{r}
+library(opennaijR)
+
+infl     <- cbn("inflation")
+exchange <- cbn("exchange_rates")
+```
+
+`cbn()` returns an `opennaijR_tbl` — a data frame with extra attributes. You can use it anywhere a normal data frame is accepted.
+
+---
+
+## Step 2 — Clean the Schema
+
+Select only the columns needed for this analysis and give them readable names.
+
+```{r}
+infl_clean <- apply_projection(
+  infl,
+  cols   = c("date", "headline_yoy", "food_yoy", "core_ex_farm_yoy"),
+  rename = c(
+    Date     = "date",
+    Headline = "headline_yoy",
+    Food     = "food_yoy",
+    Core     = "core_ex_farm_yoy"
+  ),
+  reason = "Select and rename for macro regime analysis"
+)
+
+exchange_clean <- apply_projection(
+  exchange,
+  cols   = c("date", "buying_rate"),
+  rename = c(Date = "date", Rate = "buying_rate"),
+  reason = "Minimal exchange rate schema"
+)
+
+head(infl_clean)
+```
+
+**Why do this first?** Working with short, descriptive names (`Headline`, `Food`, `Core`) makes every subsequent step easier to read and less prone to typos.
+
+---
+
+## Step 3 — Construct Inflation Regimes
+
+We classify each observation into a policy-relevant inflation category. The thresholds below are representative; adjust them to match the CBN's own communication framework if preferred.
+
+| Label | Condition |
+|-------|-----------|
+| Deflation | `Headline < 0` |
+| Low | `0 ≤ Headline ≤ 5` |
+| Moderate | `5 < Headline ≤ 15` |
+| High | `Headline > 15` |
+
+```{r}
+infl_regimes <- derive_measure(
+  infl_clean,
+  Headline_Regime = ifelse(
+    Headline < 0,  "Deflation",
+    ifelse(
+      Headline <= 5,  "Low",
+      ifelse(
+        Headline <= 15, "Moderate",
+        "High"
+      )
+    )
+  ),
+  Food_Regime = ifelse(
+    Food < 0,  "Deflation",
+    ifelse(
+      Food <= 5,  "Low",
+      ifelse(
+        Food <= 15, "Moderate",
+        "High"
+      )
+    )
+  ),
+  reason = "Construct headline and food inflation regimes"
+)
+```
+
+Two new columns appear: `Headline_Regime` and `Food_Regime`. Every original column is preserved.
+
+---
+
+## Step 4 — Descriptive Regime Analysis
+
+### 4.1 Frequency counts
+
+How often has Nigeria been in each headline inflation regime?
+
+```{r}
+table(infl_regimes$Headline_Regime)
+```
+
+This single line tells a macro story. If most observations fall in "High", inflation is structurally elevated, not episodic.
+
+Do the same for food:
+
+```{r}
+table(infl_regimes$Food_Regime)
+```
+
+Compare the two distributions side by side to see which component is more volatile.
+
+---
+
+### 4.2 Cross-tabulation
+
+The key question is whether the two regimes move together.
+
+```{r}
+regime_table <- table(
+  Headline = infl_regimes$Headline_Regime,
+  Food     = infl_regimes$Food_Regime
+)
+
+regime_table
+```
+
+Each cell shows how many periods had that combination of regimes. Look at the diagonal — a heavy diagonal indicates the two indicators move in lockstep.
+
+---
+
+### 4.3 Row proportions
+
+Raw counts depend on the sample size. Proportions are easier to interpret.
+
+```{r}
+prop.table(regime_table, margin = 1)
+```
+
+`margin = 1` gives row percentages: *given headline is High, what fraction of those months also had Food as High?*
+
+If that fraction is above 0.75, you can make a strong qualitative claim:
+
+> In more than three-quarters of high-headline-inflation episodes, food inflation was simultaneously elevated, suggesting food price dynamics are a primary transmission mechanism.
+
+---
+
+## Step 5 — Statistical Association Test
+
+Move from observation to inference with a Chi-square test.
+
+```{r}
+chisq.test(regime_table)
+```
+
+**How to read the output:**
+
+- **X-squared** — the test statistic; a larger value indicates stronger association.
+- **df** — degrees of freedom; depends on the number of categories.
+- **p-value** — if below 0.05, the association between regimes is statistically significant (not due to chance at the 5% level).
+
+A significant result allows you to write:
+
+> There is a statistically significant association between food and headline inflation regimes (χ²(df) = X, p < 0.05), rejecting independence.
+
+---
+
+## Step 6 — Continuous Regression Models
+
+Regime analysis tells you *when* indicators move together. Regression tells you *how much*.
+
+### Model 1 — Food alone
+
+```{r}
+model1 <- lm(Headline ~ Food, data = infl_regimes)
+summary(model1)
+```
+
+**Key output to interpret:**
+
+- **Coefficient on `Food`** — a one percentage-point rise in food inflation is associated with a `β` percentage-point rise in headline inflation. If `β ≈ 0.7`, food is a strong but partial driver.
+- **R²** — the share of headline inflation's variance explained by food inflation alone. An R² of 0.80 means food explains 80% of headline variation.
+
+---
+
+### Model 2 — Food and Core together
+
+```{r}
+model2 <- lm(Headline ~ Food + Core, data = infl_regimes)
+summary(model2)
+```
+
+Compare to Model 1:
+
+- Does Food remain significant after controlling for Core? If yes, food has an independent effect.
+- Does Core add explanatory power? Check the change in Adjusted R².
+- Do the two coefficients suggest which component is more influential?
+
+---
+
+### Model 3 — Augmented with Exchange Rate
+
+Exchange rate depreciation can feed into import prices, amplifying food and headline inflation. Merge the datasets and test this hypothesis.
+
+```{r}
+macro <- merge(infl_regimes, exchange_clean, by = "Date")
+
+model3 <- lm(Headline ~ Food + Core + Rate, data = macro)
+summary(model3)
+```
+
+A positive, significant coefficient on `Rate` would mean that periods of naira depreciation are associated with higher headline inflation — a pass-through effect. This is policy-relevant because the CBN uses exchange rate policy partly as an inflation tool.
+
+---
+
+## Step 7 — Logistic Regression: Predicting the High-Inflation Regime
+
+Sometimes the policy question is binary: are we *in* a high-inflation episode or not? Logistic regression estimates the probability of being in that state.
+
+```{r}
+# Create the binary outcome
+infl_binary <- derive_measure(
+  infl_regimes,
+  High_Inflation = Headline > 15,
+  reason         = "Binary indicator for high-inflation regime"
+)
+
+# Estimate the model
+logit_model <- glm(
+  High_Inflation ~ Food,
+  data   = infl_binary,
+  family = binomial()
+)
+
+summary(logit_model)
+```
+
+**Interpreting logistic coefficients:**
+
+Logistic regression does not produce a direct percentage-point effect. Instead, exponentiate the coefficient to get an **odds ratio**:
+
+```{r}
+exp(coef(logit_model))
+```
+
+An odds ratio of 1.15 on `Food` means: for every one percentage-point increase in food inflation, the odds of being in a high-inflation regime increase by 15%.
+
+---
+
+### Adding the exchange rate to the logit model
+
+```{r}
+macro_binary <- merge(infl_binary, exchange_clean, by = "Date")
+
+logit_model2 <- glm(
+  High_Inflation ~ Food + Rate,
+  data   = macro_binary,
+  family = binomial()
+)
+
+summary(logit_model2)
+exp(coef(logit_model2))
+```
+
+---
+
+## Step 8 — Advanced: Interaction Terms
+
+Does the impact of food inflation on headline inflation *depend on* how high core inflation already is? An interaction term tests this.
+
+```{r}
+model_interaction <- lm(
+  Headline ~ Food * Core,
+  data = infl_regimes
+)
+
+summary(model_interaction)
+```
+
+The term `Food:Core` is the interaction. A significant, positive interaction coefficient means food inflation has a *larger* marginal effect on headline inflation when core inflation is also elevated — the two pressures compound each other.
+
+This is the kind of finding that motivates coordinated monetary and supply-side policy responses.
+
+---
+
+## Step 9 — Inspect the Manifest
+
+Every `derive_measure()` call left a record. Retrieve it to document your research trail.
+
+```{r}
+manifest <- attr(infl_binary, "derive_manifest")
+
+# How many derivation steps were recorded?
+length(manifest)
+
+# Inspect the most recent step
+tail(manifest, 1)[[1]]$timestamp
+tail(manifest, 1)[[1]]$expressions
+tail(manifest, 1)[[1]]$reason
+```
+
+For a published paper or policy report, include the manifest output in an appendix. It demonstrates exactly which transformations were applied to the raw CBN data.
+
+---
+
+## Step 10 — Interpreting Results for Policy
+
+Once you have run the models, translate the numbers into plain language. Here is a template:
+
+> **Descriptive:** High headline inflation coincided with high food inflation in `prop.table()` of observed months, suggesting food price dynamics are the dominant transmission channel.
+>
+> **Statistical:** A Chi-square test confirms this association is statistically significant (p < 0.05), rejecting the hypothesis that headline and food regimes are independent.
+>
+> **Regression:** A one percentage-point increase in food inflation is associated with a `β₁` percentage-point increase in headline inflation (p < 0.001), controlling for core inflation. Food inflation explains `R²`% of variation in headline inflation.
+>
+> **Policy implication:** Interventions targeting food supply chains — storage infrastructure, agricultural inputs, border trade logistics — are likely to have a measurable dampening effect on headline inflation.
+
+---
+
+## Summary of the Full Pipeline
+
+```{r}
+# ── 1. Data ────────────────────────────────────────────────────────────────────
+infl     <- cbn("inflation")
+exchange <- cbn("exchange_rates")
+
+# ── 2. Schema ──────────────────────────────────────────────────────────────────
+infl_clean <- apply_projection(
+  infl,
+  cols   = c("date", "headline_yoy", "food_yoy", "core_ex_farm_yoy"),
+  rename = c(Date = "date", Headline = "headline_yoy",
+             Food = "food_yoy", Core = "core_ex_farm_yoy"),
+  reason = "Select and rename for macro regime analysis"
+)
+
+exchange_clean <- apply_projection(
+  exchange,
+  cols   = c("date", "buying_rate"),
+  rename = c(Date = "date", Rate = "buying_rate")
+)
+
+# ── 3. Features ────────────────────────────────────────────────────────────────
+infl_regimes <- derive_measure(
+  infl_clean,
+  Headline_Regime = ifelse(Headline < 0, "Deflation",
+                    ifelse(Headline <= 5, "Low",
+                    ifelse(Headline <= 15, "Moderate", "High"))),
+  Food_Regime     = ifelse(Food < 0, "Deflation",
+                    ifelse(Food <= 5, "Low",
+                    ifelse(Food <= 15, "Moderate", "High"))),
+  High_Inflation  = Headline > 15,
+  reason          = "Regime construction and binary flag"
+)
+
+# ── 4. Association ─────────────────────────────────────────────────────────────
+regime_table <- table(infl_regimes$Headline_Regime, infl_regimes$Food_Regime)
+prop.table(regime_table, margin = 1)
+chisq.test(regime_table)
+
+# ── 5. Regression ──────────────────────────────────────────────────────────────
+model1 <- lm(Headline ~ Food,        data = infl_regimes)
+model2 <- lm(Headline ~ Food + Core, data = infl_regimes)
+
+macro   <- merge(infl_regimes, exchange_clean, by = "Date")
+model3  <- lm(Headline ~ Food + Core + Rate, data = macro)
+
+logit1  <- glm(High_Inflation ~ Food + Rate, data = macro, family = binomial())
+
+# ── 6. Manifest ────────────────────────────────────────────────────────────────
+attr(infl_regimes, "derive_manifest")
+```
+
+This is a reproducible, publishable macroeconomic analysis — written entirely in R, documented entirely by the opennaijR manifest system.

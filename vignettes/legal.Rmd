@@ -1,0 +1,106 @@
+---
+title: "Legal Information"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Legal Information}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+*Last updated: 2026*
+
+---
+
+## 1. What opennaijR Is
+
+opennaijR is a software package that provides structured, reproducible, and programmatic access to publicly available African economic and financial data.
+
+opennaijR does not host, store, resell, or redistribute government data. All data accessed through opennaijR remains the property of the respective originating institutions. When you call `cbn("inflation")`, your R session connects directly to the Central Bank of Nigeria's data infrastructure. The data flows to you from the institution -- opennaijR provides the automation logic that makes that connection clean and reproducible.
+
+---
+
+## 2. What the Software Provides
+
+opennaijR provides:
+
+- Automation tools that reduce manual data preparation work
+- Structured connectors to official institutional endpoints
+- Data normalisation and transformation logic (cleaning, date parsing, column naming)
+- Local caching and workflow integration utilities
+
+Any fees charged in the future apply strictly to use of the opennaijR software infrastructure and engineering services. They do not grant ownership of, or exclusive access to, the underlying public data, which remains free at its source.
+
+---
+
+## 3. Data Ownership and Attribution
+
+All datasets accessed via opennaijR remain the intellectual property and responsibility of their originating institutions, including but not limited to central banks, national statistics agencies, and ministries of finance.
+
+opennaijR makes no claim of ownership over any government dataset.
+
+Users are responsible for complying with each institution's data usage, citation, and redistribution requirements. In academic and professional work, the original institution -- not opennaijR -- should be cited as the data source.
+
+---
+
+## 4. No Warranty
+
+opennaijR is provided "as is" without warranties of any kind, expressed or implied.
+
+While reasonable efforts are made to ensure reliability and correctness of the connection logic:
+
+- Data availability depends entirely on the source institution
+- API endpoints and publication formats may change without notice
+- Institutions may revise historical data, affecting results from cached queries
+- Network conditions, institutional outages, and access restrictions are outside opennaijR's control
+
+opennaijR makes no guarantees regarding the completeness, accuracy, timeliness, or continued availability of any dataset.
+
+---
+
+## 5. Limitation of Liability
+
+Under no circumstances shall opennaijR or its maintainers be liable for financial loss, business interruption, data inaccuracies originating from source institutions, API changes or downtime, or any indirect or consequential damages arising from use of the software.
+
+Users assume full responsibility for how retrieved data is interpreted, applied, and communicated.
+
+---
+
+## 6. Acceptable Use
+
+By using opennaijR, users agree not to:
+
+- Misrepresent the ownership or authorship of retrieved data
+- Circumvent institutional access controls or terms of service
+- Use opennaijR to redistribute proprietary institutional data in breach of source terms
+- Use opennaijR in violation of applicable local or international law
+
+---
+
+## 7. Open Source License
+
+opennaijR is released under the MIT License. You are free to use, modify, and distribute the software subject to the terms of that license. A copy of the license is included in the package repository.
+
+The MIT License governs the software. It does not govern the data retrieved through the software, which remains subject to the terms of each originating institution.
+
+---
+
+## 8. Changes to These Terms
+
+These terms may be updated periodically to reflect changes in the package, its access model, or applicable law. Continued use of opennaijR following an update constitutes acceptance of the revised terms. The date at the top of this page reflects the most recent revision.
+
+---
+
+## 9. Contact
+
+For questions regarding legal terms, licensing, institutional collaboration, or data attribution:
+
+Lawrence Garba
+laws.garba@gmail.com
+
+---
+
+*Copyright 2026 opennaijR Project*

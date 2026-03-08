@@ -1,0 +1,10 @@
+.Rproj.user
+docs
+inst/doc
+/doc/
+/Meta/
+.Rhistory
+.RData
+docs/
+*.Rcheck/
+*.tar.gz
