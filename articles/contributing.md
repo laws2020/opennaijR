@@ -1,0 +1,163 @@
+# Contributing to opennaijR
+
+## Why Contributions Matter
+
+opennaijR exists to make official African economic data programmable,
+reproducible, and accessible. Today it connects to the Central Bank of
+Nigeria. The long-term vision is a single, consistent R interface to
+every central bank and national statistics bureau across Africa.
+
+That ambition is only reachable with community help.
+
+Data formats change. URLs break. New institutions publish new
+indicators. No single maintainer can track all of that. Contributors who
+know their country’s data landscape are the most valuable asset the
+project has.
+
+------------------------------------------------------------------------
+
+## What We Are Building Toward
+
+The roadmap has two horizons.
+
+**Near term – deepen Nigerian coverage**
+
+- Add remaining CBN endpoints not yet connected
+- Connect the National Bureau of Statistics (NBS) for CPI, GDP, labour,
+  and trade data
+- Connect the Nigerian Exchange Group (NGX) for equity and market data
+
+**Medium term – expand across Africa**
+
+The target institutions, by country, are listed in the Data Sources
+article. Priority is given to countries with stable, machine-readable
+official publications. If you work with or have knowledge of any of
+these sources, your contribution is especially welcome.
+
+------------------------------------------------------------------------
+
+## Ways to Contribute
+
+### Data Connectors and Maintenance
+
+This is the highest-impact area. A connector is the code that fetches,
+parses, and cleans data from one institutional endpoint. Contributing a
+connector means:
+
+- Identifying the official URL or API for a dataset
+- Writing a parser that handles the institution’s format
+- Writing cleaning logic that produces a tidy, consistently named output
+- Adding validation to confirm the output matches the official release
+
+If you are willing to act as a long-term **data steward** for a specific
+institution – someone who monitors for format changes and updates the
+connector when needed – please open an issue and say so. Stewards are
+credited in the package documentation.
+
+------------------------------------------------------------------------
+
+### Expanding Regional Coverage
+
+To add a new country or institution, open an issue with:
+
+1.  The country and institution name
+2.  A link to the official data publication page
+3.  The format the data is published in (Excel, CSV, JSON, API, PDF)
+4.  Whether the publication is updated regularly and on what schedule
+
+All new sources must meet our data principles (official sources only, no
+manipulation, full reproducibility). See the Data Sources article for
+the full list of principles.
+
+------------------------------------------------------------------------
+
+### Documentation and Education
+
+Infrastructure is only useful if people understand how to use it. Good
+documentation is as important as good code.
+
+You can contribute:
+
+- Tutorials for specific analytical tasks (monetary policy analysis,
+  exchange rate modelling, inflation decomposition)
+- Reproducible research examples using real CBN or NBS data
+- Policy analysis workflows aimed at practitioners
+- Classroom vignettes for university economics courses
+- Data journalism examples
+
+If you have used opennaijR in a paper, report, or article, we would be
+glad to link to it from the package website.
+
+------------------------------------------------------------------------
+
+### Testing and Validation
+
+Reliable infrastructure requires rigorous testing. You can contribute
+by:
+
+- Writing unit tests for existing connectors
+- Validating package output against official published figures
+- Testing edge cases such as missing periods, revised data, or format
+  changes
+- Reporting discrepancies between opennaijR output and the source
+  institution’s published numbers
+
+Reproducibility is non-negotiable. If a function produces a number that
+cannot be traced back to an official source, that is a bug.
+
+------------------------------------------------------------------------
+
+### Institutional Collaboration
+
+Universities, research institutes, think tanks, and policy organisations
+are encouraged to reach out about formal collaboration. Possible models
+include:
+
+- Co-maintained connectors for specific datasets
+- Research-driven feature development
+- Institutional data stewardship agreements
+- Integration into teaching curricula
+
+Contact the maintainer at <laws.garba@gmail.com> to discuss.
+
+------------------------------------------------------------------------
+
+## Contribution Workflow
+
+    1. Open an issue describing what you want to add or fix
+    2. Fork the repository
+    3. Create a feature branch
+    4. Write your code and document it clearly
+    5. Submit a pull request referencing the issue
+    6. Respond to review feedback
+
+Major structural changes – new function families, changes to the
+manifest system, new access tiers – should be discussed in an issue
+before any development begins. This avoids duplicated effort and keeps
+the codebase coherent.
+
+------------------------------------------------------------------------
+
+## Review Standards
+
+All contributions are reviewed against these criteria:
+
+- Data is retrieved from an official, citable source
+- Transformations are transparent and documented
+- Code is readable and follows the existing style
+- Tests cover the main cases
+- The change is backward compatible, or the breaking change is justified
+  and documented
+
+The project prioritises stability over speed, and integrity over
+expansion. A connector that occasionally returns wrong data is worse
+than no connector at all.
+
+------------------------------------------------------------------------
+
+## A Note on Attribution
+
+Contributors are credited in the package `NEWS.md`, the relevant
+function documentation, and, for major contributions, the package
+`DESCRIPTION` file. Data stewards are listed in the Data Sources article
+alongside the institution they maintain.

@@ -1,0 +1,19 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  apply_projection: apply_projection.html
+  contributing: contributing.html
+  data-sources: data-sources.html
+  derive_measure: derive_measure.html
+  inflation_charts: inflation_charts.html
+  legal: legal.html
+  macro_regime_regression: macro_regime_regression.html
+  nga_cbn: nga_cbn.html
+  opennaijR: opennaijR.html
+  plot_inflation_shock: plot_inflation_shock.html
+  sustainability: sustainability.html
+last_built: 2026-03-08T12:57Z
+urls:
+  reference: https://laws2020.github.io/opennaijR/reference
+  article: https://laws2020.github.io/opennaijR/articles
