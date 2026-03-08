@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Contributing to opennaijR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Contributing to opennaijR</h1>
+
+
+
+<div id="why-contributions-matter" class="section level2">
+<h2>Why Contributions Matter</h2>
+<p>opennaijR exists to make official African economic data programmable,
+reproducible, and accessible. Today it connects to the Central Bank of
+Nigeria. The long-term vision is a single, consistent R interface to
+every central bank and national statistics bureau across Africa.</p>
+<p>That ambition is only reachable with community help.</p>
+<p>Data formats change. URLs break. New institutions publish new
+indicators. No single maintainer can track all of that. Contributors who
+know their country’s data landscape are the most valuable asset the
+project has.</p>
+<hr />
+</div>
+<div id="what-we-are-building-toward" class="section level2">
+<h2>What We Are Building Toward</h2>
+<p>The roadmap has two horizons.</p>
+<p><strong>Near term – deepen Nigerian coverage</strong></p>
+<ul>
+<li>Add remaining CBN endpoints not yet connected</li>
+<li>Connect the National Bureau of Statistics (NBS) for CPI, GDP,
+labour, and trade data</li>
+<li>Connect the Nigerian Exchange Group (NGX) for equity and market
+data</li>
+</ul>
+<p><strong>Medium term – expand across Africa</strong></p>
+<p>The target institutions, by country, are listed in the Data Sources
+article. Priority is given to countries with stable, machine-readable
+official publications. If you work with or have knowledge of any of
+these sources, your contribution is especially welcome.</p>
+<hr />
+</div>
+<div id="ways-to-contribute" class="section level2">
+<h2>Ways to Contribute</h2>
+<div id="data-connectors-and-maintenance" class="section level3">
+<h3>Data Connectors and Maintenance</h3>
+<p>This is the highest-impact area. A connector is the code that
+fetches, parses, and cleans data from one institutional endpoint.
+Contributing a connector means:</p>
+<ul>
+<li>Identifying the official URL or API for a dataset</li>
+<li>Writing a parser that handles the institution’s format</li>
+<li>Writing cleaning logic that produces a tidy, consistently named
+output</li>
+<li>Adding validation to confirm the output matches the official
+release</li>
+</ul>
+<p>If you are willing to act as a long-term <strong>data
+steward</strong> for a specific institution – someone who monitors for
+format changes and updates the connector when needed – please open an
+issue and say so. Stewards are credited in the package
+documentation.</p>
+<hr />
+</div>
+<div id="expanding-regional-coverage" class="section level3">
+<h3>Expanding Regional Coverage</h3>
+<p>To add a new country or institution, open an issue with:</p>
+<ol style="list-style-type: decimal">
+<li>The country and institution name</li>
+<li>A link to the official data publication page</li>
+<li>The format the data is published in (Excel, CSV, JSON, API,
+PDF)</li>
+<li>Whether the publication is updated regularly and on what
+schedule</li>
+</ol>
+<p>All new sources must meet our data principles (official sources only,
+no manipulation, full reproducibility). See the Data Sources article for
+the full list of principles.</p>
+<hr />
+</div>
+<div id="documentation-and-education" class="section level3">
+<h3>Documentation and Education</h3>
+<p>Infrastructure is only useful if people understand how to use it.
+Good documentation is as important as good code.</p>
+<p>You can contribute:</p>
+<ul>
+<li>Tutorials for specific analytical tasks (monetary policy analysis,
+exchange rate modelling, inflation decomposition)</li>
+<li>Reproducible research examples using real CBN or NBS data</li>
+<li>Policy analysis workflows aimed at practitioners</li>
+<li>Classroom vignettes for university economics courses</li>
+<li>Data journalism examples</li>
+</ul>
+<p>If you have used opennaijR in a paper, report, or article, we would
+be glad to link to it from the package website.</p>
+<hr />
+</div>
+<div id="testing-and-validation" class="section level3">
+<h3>Testing and Validation</h3>
+<p>Reliable infrastructure requires rigorous testing. You can contribute
+by:</p>
+<ul>
+<li>Writing unit tests for existing connectors</li>
+<li>Validating package output against official published figures</li>
+<li>Testing edge cases such as missing periods, revised data, or format
+changes</li>
+<li>Reporting discrepancies between opennaijR output and the source
+institution’s published numbers</li>
+</ul>
+<p>Reproducibility is non-negotiable. If a function produces a number
+that cannot be traced back to an official source, that is a bug.</p>
+<hr />
+</div>
+<div id="institutional-collaboration" class="section level3">
+<h3>Institutional Collaboration</h3>
+<p>Universities, research institutes, think tanks, and policy
+organisations are encouraged to reach out about formal collaboration.
+Possible models include:</p>
+<ul>
+<li>Co-maintained connectors for specific datasets</li>
+<li>Research-driven feature development</li>
+<li>Institutional data stewardship agreements</li>
+<li>Integration into teaching curricula</li>
+</ul>
+<p>Contact the maintainer at <a href="mailto:laws.garba@gmail.com" class="email">laws.garba@gmail.com</a> to discuss.</p>
+<hr />
+</div>
+</div>
+<div id="contribution-workflow" class="section level2">
+<h2>Contribution Workflow</h2>
+<pre><code>1. Open an issue describing what you want to add or fix
+2. Fork the repository
+3. Create a feature branch
+4. Write your code and document it clearly
+5. Submit a pull request referencing the issue
+6. Respond to review feedback</code></pre>
+<p>Major structural changes – new function families, changes to the
+manifest system, new access tiers – should be discussed in an issue
+before any development begins. This avoids duplicated effort and keeps
+the codebase coherent.</p>
+<hr />
+</div>
+<div id="review-standards" class="section level2">
+<h2>Review Standards</h2>
+<p>All contributions are reviewed against these criteria:</p>
+<ul>
+<li>Data is retrieved from an official, citable source</li>
+<li>Transformations are transparent and documented</li>
+<li>Code is readable and follows the existing style</li>
+<li>Tests cover the main cases</li>
+<li>The change is backward compatible, or the breaking change is
+justified and documented</li>
+</ul>
+<p>The project prioritises stability over speed, and integrity over
+expansion. A connector that occasionally returns wrong data is worse
+than no connector at all.</p>
+<hr />
+</div>
+<div id="a-note-on-attribution" class="section level2">
+<h2>A Note on Attribution</h2>
+<p>Contributors are credited in the package <code>NEWS.md</code>, the
+relevant function documentation, and, for major contributions, the
+package <code>DESCRIPTION</code> file. Data stewards are listed in the
+Data Sources article alongside the institution they maintain.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

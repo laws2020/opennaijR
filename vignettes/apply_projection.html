@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Lawrence Garba" />
+
+
+<title>Schema Management with apply_projection()</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Schema Management with
+apply_projection()</h1>
+<h4 class="author">Lawrence Garba</h4>
+
+
+
+<div id="what-is-apply_projection" class="section level2">
+<h2>What is <code>apply_projection()</code>?</h2>
+<p>When you retrieve data from the CBN API, the result contains every
+column the endpoint offers — sometimes more than you need, and almost
+always with names that require explanation.
+<code>apply_projection()</code> lets you take control of that raw data
+by doing three things in a single, auditable step:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Select</strong> — keep only the columns you care about.</li>
+<li><strong>Rename</strong> — replace technical column names with
+human-readable labels.</li>
+<li><strong>Reorder</strong> — arrange columns in the sequence that fits
+your workflow.</li>
+</ol>
+<p>Every call is silently recorded in a <strong>projection
+manifest</strong> attached to the result as an attribute. This means you
+can always look back and see <em>exactly</em> what was done, when it was
+done, and why — which is essential for reproducible research.</p>
+<hr />
+</div>
+<div id="input-and-output" class="section level2">
+<h2>Input and Output</h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="20%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Type</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.data</code></td>
+<td><code>data.frame</code> / <code>opennaijR_tbl</code></td>
+<td>Your raw or previously projected dataset</td>
+</tr>
+<tr class="even">
+<td><code>cols</code></td>
+<td><code>character vector</code></td>
+<td>Names of the columns to keep</td>
+</tr>
+<tr class="odd">
+<td><code>rename</code></td>
+<td><strong>named</strong> <code>character vector</code></td>
+<td>New names mapped to old names:
+<code>c(NewName = &quot;old_name&quot;)</code></td>
+</tr>
+<tr class="even">
+<td><code>order</code></td>
+<td><code>character vector</code></td>
+<td>Final column order (use post-rename names if you renamed)</td>
+</tr>
+<tr class="odd">
+<td><code>reason</code></td>
+<td><code>character scalar</code></td>
+<td>Optional label stored in the manifest for audit purposes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output:</strong> A <code>data.frame</code> of the same class
+as the input, containing only the requested columns in the requested
+order, with the requested names — plus a
+<code>projection_manifest</code> attribute.</p>
+<hr />
+</div>
+<div id="selecting-columns" class="section level2">
+<h2>1. Selecting Columns</h2>
+<p>The simplest use case: you only want two of the many columns in the
+inflation dataset.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(opennaijR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;inflation&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># Keep only the date and headline year-on-year figure</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>infl_basic <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  infl,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">head</span>(infl_basic)</span></code></pre></div>
+<p><strong>What happened?</strong> Every column except <code>date</code>
+and <code>headline_yoy</code> was dropped. The data is otherwise
+unchanged — same rows, same values, same order.</p>
+<p>To keep more columns, just extend the vector:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>infl_three_cols <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  infl,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="renaming-columns" class="section level2">
+<h2>2. Renaming Columns</h2>
+<p>Renaming uses a <strong>named</strong> character vector where the
+<em>name</em> on the left is what you want the column to be called, and
+the <em>value</em> on the right is what it is called now.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Rename all columns — no selection, every column is kept</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>infl_renamed <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  infl,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">Date     =</span> <span class="st">&quot;date&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">Food     =</span> <span class="st">&quot;food_yoy&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  )</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span></code></pre></div>
+<p>If you only rename a subset of columns, the rest keep their original
+names.</p>
+<blockquote>
+<p><strong>Common mistake:</strong> Passing an <em>unnamed</em> vector
+to <code>rename</code> will throw an error.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># This will fail — no names on the left-hand side</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">apply_projection</span>(infl, <span class="at">rename =</span> <span class="fu">c</span>(<span class="st">&quot;headline_yoy&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; Error: `rename` must be a named vector: c(new_name = &#39;old_name&#39;)</span></span></code></pre></div>
+</blockquote>
+<hr />
+</div>
+<div id="selecting-and-renaming-together" class="section level2">
+<h2>3. Selecting and Renaming Together</h2>
+<p>You can combine <code>cols</code> and <code>rename</code> in one
+call. The columns not listed in <code>cols</code> are dropped first, and
+then the remaining columns are renamed.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>infl_clean <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  infl,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">Date     =</span> <span class="st">&quot;date&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">Food     =</span> <span class="st">&quot;food_yoy&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  )</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="fu">head</span>(infl_clean)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;         Date Headline     Food</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; 1 2010-01-01    11.80    14.60</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 2 2010-02-01    14.05    17.02</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; ...</span></span></code></pre></div>
+<hr />
+</div>
+<div id="reordering-columns" class="section level2">
+<h2>4. Reordering Columns</h2>
+<p>Use <code>order</code> when the column sequence matters — for
+example, a dashboard that expects a specific layout, or a report where
+the most important indicator should appear first.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Put food before headline, even though we selected headline first</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>infl_reordered <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  infl,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">cols  =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">c</span>(<span class="st">&quot;food_yoy&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;date&quot;</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>After renaming</strong>, use the <em>new</em> names in
+<code>order</code>, not the original ones:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>infl_report <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  infl,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>, <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>, <span class="at">Food =</span> <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">order  =</span> <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, <span class="st">&quot;Headline&quot;</span>, <span class="st">&quot;Food&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="adding-a-reason-audit-trail" class="section level2">
+<h2>5. Adding a Reason (Audit Trail)</h2>
+<p>The <code>reason</code> argument does not change the data at all — it
+adds a human-readable label to the manifest so you can recall
+<em>why</em> a particular projection was applied.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>policy_brief <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  infl,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;core_ex_farm_yoy&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>, <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>, <span class="at">Core =</span> <span class="st">&quot;core_ex_farm_yoy&quot;</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Quarterly macroeconomic policy brief — Q1 2025&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>Inspect the manifest afterwards:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>manifest <span class="ot">&lt;-</span> <span class="fu">attr</span>(policy_brief, <span class="st">&quot;projection_manifest&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>timestamp  <span class="co"># When it ran</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>reason     <span class="co"># Your label</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>cols_kept  <span class="co"># Which columns were kept</span></span></code></pre></div>
+<hr />
+</div>
+<div id="chaining-projections-audit-trail-accumulation" class="section level2">
+<h2>6. Chaining Projections (Audit-Trail Accumulation)</h2>
+<p>You can call <code>apply_projection()</code> on the <em>result</em>
+of a previous call. Each step appends a new entry to the manifest,
+giving you a complete audit trail of every transformation.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Step 1 — select</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>step1 <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  infl,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Initial column selection&quot;</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Step 2 — rename (applied to step1&#39;s output)</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>step2 <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  step1,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>, <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>, <span class="at">Food =</span> <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Standardize names for reporting&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>)</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co"># Both steps are recorded</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="fu">attr</span>(step2, <span class="st">&quot;projection_manifest&quot;</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; $action    &quot;projection&quot;</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; $reason    &quot;Initial column selection&quot;</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; $timestamp  ...</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; $action    &quot;projection&quot;</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; $reason    &quot;Standardize names for reporting&quot;</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; $timestamp  ...</span></span></code></pre></div>
+<p>This is particularly useful when a dataset passes through multiple
+analyst hands or pipeline stages.</p>
+<hr />
+</div>
+<div id="pipe-friendly-usage" class="section level2">
+<h2>7. Pipe-Friendly Usage</h2>
+<p><code>apply_projection()</code> works naturally in a
+<code>|&gt;</code> or <code>%&gt;%</code> pipeline:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>infl <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">apply_projection</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">cols   =</span> <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>, <span class="at">Headline =</span> <span class="st">&quot;headline_yoy&quot;</span>, <span class="at">Food =</span> <span class="st">&quot;food_yoy&quot;</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">reason =</span> <span class="st">&quot;Pipeline transformation for dashboard&quot;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  )</span></code></pre></div>
+<hr />
+</div>
+<div id="standardizing-schemas-across-datasets" class="section level2">
+<h2>8. Standardizing Schemas Across Datasets</h2>
+<p>One powerful use of <code>apply_projection()</code> is ensuring that
+different datasets share the same column naming convention before
+merging or comparing them.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>exchange <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co"># Give both datasets a common &quot;Date&quot; column name</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>infl_std <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  infl,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Standard schema — macro datasets&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>exchange_std <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  exchange,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;ratedate&quot;</span>),</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Standard schema — macro datasets&quot;</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>)</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co"># Now both share the same &quot;Date&quot; column and can be merged cleanly</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>macro <span class="ot">&lt;-</span> <span class="fu">merge</span>(infl_std, exchange_std, <span class="at">by =</span> <span class="st">&quot;Date&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="error-reference" class="section level2">
+<h2>9. Error Reference</h2>
+<table>
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Error message</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Column listed in <code>cols</code> does not exist</td>
+<td><code>Unknown column(s) in projection: &lt;name&gt;</code></td>
+</tr>
+<tr class="even">
+<td><code>rename</code> vector has no names</td>
+<td><code>`rename` must be a named vector: c(new_name = &#39;old_name&#39;)</code></td>
+</tr>
+<tr class="odd">
+<td>Column listed in <code>order</code> not in the projected set</td>
+<td>Error naming the missing column</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="workflow-position" class="section level2">
+<h2>Workflow Position</h2>
+<p><code>apply_projection()</code> is the <strong>first
+transformation</strong> you apply after <code>cbn()</code>. Think of it
+as setting your schema before any calculations begin. The typical
+opennaijR workflow looks like this:</p>
+<pre><code>cbn()  →  apply_projection()  →  derive_measure()  →  analysis</code></pre>
+<p>Once you have a clean, consistently named dataset, you are ready to
+engineer features with <code>derive_measure()</code>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

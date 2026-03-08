@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Inflation Charts</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Inflation Charts</h1>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>opennaijR ships two complementary plotting functions. Understanding
+the difference between them is the first step to using them
+correctly.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="35%" />
+<col width="38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it draws</th>
+<th>Best used for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>plot_inflation_shocks()</code></td>
+<td>One inflation series with shock event markers</td>
+<td>Showing <em>when</em> a policy shock hit and how prices
+responded</td>
+</tr>
+<tr class="even">
+<td><code>plot_inflation()</code></td>
+<td>Multiple inflation series on a single chart</td>
+<td>Comparing headline, food, and core inflation side by side</td>
+</tr>
+</tbody>
+</table>
+<p>Both functions accept the <code>opennaijR_tbl</code> object returned
+by <code>cbn()</code> and produce <code>ggplot2</code>-compatible
+output. Neither requires any data reshaping from you.</p>
+<hr />
+</div>
+<div id="part-1-plot_inflation_shocks" class="section level1">
+<h1>Part 1 – <code>plot_inflation_shocks()</code></h1>
+<div id="what-the-function-does" class="section level2">
+<h2>What the Function Does</h2>
+<p><code>plot_inflation_shocks()</code> draws an inflation time series
+and automatically overlays vertical markers for significant Nigerian
+macroeconomic events. The shock markers are built into the function –
+you do not configure them.</p>
+<p>The events currently marked are:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Event</th>
+<th>Period</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2016 Oil Recession</td>
+<td>Full year 2016</td>
+</tr>
+<tr class="even">
+<td>COVID-19 Pandemic</td>
+<td>March 2020 – December 2021</td>
+</tr>
+<tr class="odd">
+<td>2023 Fuel Subsidy Removal</td>
+<td>June 2023 onwards</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="arguments" class="section level2">
+<h2>Arguments</h2>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="23%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Type</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>data</code></td>
+<td><code>data.frame</code></td>
+<td>required</td>
+<td>Your dataset</td>
+</tr>
+<tr class="even">
+<td><code>date_col</code></td>
+<td><code>character</code></td>
+<td><code>&quot;date&quot;</code></td>
+<td>Name of the date column</td>
+</tr>
+<tr class="odd">
+<td><code>val_col</code></td>
+<td><code>character</code></td>
+<td><code>&quot;headline_yoy&quot;</code></td>
+<td>Name of the numeric column to plot</td>
+</tr>
+<tr class="even">
+<td><code>title</code></td>
+<td><code>character</code></td>
+<td><code>&quot;Nigeria Inflation Trends&quot;</code></td>
+<td>Plot title</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="basic-usage" class="section level2">
+<h2>1. Basic Usage</h2>
+<p>If your data comes from <code>cbn(&quot;inflation&quot;)</code>, the default
+column names already match. One line produces a complete chart.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(opennaijR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;inflation&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(infl)</span></code></pre></div>
+<p>You will see headline year-on-year inflation as a continuous line,
+three shock markers drawn as vertical bands or lines, percentage labels
+on the y-axis, and a source caption. All of that happens
+automatically.</p>
+<hr />
+</div>
+<div id="switching-the-inflation-measure" class="section level2">
+<h2>2. Switching the Inflation Measure</h2>
+<p>Nigeria’s headline figure is a weighted composite.
+<code>val_col</code> lets you look beneath it at a specific
+component.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Food inflation -- most sensitive to supply shocks and import costs</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">val_col =</span> <span class="st">&quot;food_yoy&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Nigeria Food Inflation Trends&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Core inflation -- strips out farm produce and energy</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">val_col =</span> <span class="st">&quot;core_ex_farm_yoy&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Nigeria Core Inflation Trends&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>When to use each measure:</strong></p>
+<ul>
+<li><code>headline_yoy</code> – the overall price level. Use this for
+general briefings and policy summaries.</li>
+<li><code>food_yoy</code> – most volatile component. Use this when
+analysing food security, agricultural policy, or import dependency.</li>
+<li><code>core_ex_farm_yoy</code> – strips food and energy to reveal
+underlying demand pressure. Preferred for monetary policy analysis
+because it is less distorted by supply shocks.</li>
+</ul>
+<hr />
+</div>
+<div id="filtering-to-a-specific-period" class="section level2">
+<h2>3. Filtering to a Specific Period</h2>
+<p>Filter your data frame <em>before</em> passing it to the function to
+zoom into a particular economic era. The shock markers will
+automatically show only the events that fall within your filtered
+window.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Focus on the post-COVID and subsidy-removal period</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>recent_data <span class="ot">&lt;-</span> infl[infl<span class="sc">$</span>date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-01-01&quot;</span>), ]</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">data  =</span> recent_data,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Inflation Volatility: 2020 to Present&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Isolate the 2016 recession era</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>recession_era <span class="ot">&lt;-</span> infl[</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  infl<span class="sc">$</span>date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2015-01-01&quot;</span>) <span class="sc">&amp;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  infl<span class="sc">$</span>date <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2018-12-01&quot;</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>]</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">data  =</span> recession_era,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Inflation During the 2016 Recession&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Why filter rather than zoom the axis?</strong> Filtering
+restricts the actual data entering the function, which keeps the y-axis
+scale honest for the period of interest. Zooming the axis without
+filtering compresses variation and can mislead readers about the
+magnitude of change.</p>
+<hr />
+</div>
+<div id="working-with-external-data" class="section level2">
+<h2>4. Working with External Data</h2>
+<p>The function works with any data frame – not just CBN data. Use
+<code>date_col</code> and <code>val_col</code> to tell it which columns
+to use.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>external_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">period =</span> <span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;2015-01-01&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;2024-01-01&quot;</span>), <span class="at">by =</span> <span class="st">&quot;month&quot;</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">rate   =</span> <span class="fu">runif</span>(<span class="dv">109</span>, <span class="dv">10</span>, <span class="dv">30</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">data     =</span> external_df,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">date_col =</span> <span class="st">&quot;period&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">val_col  =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">title    =</span> <span class="st">&quot;Custom Series with Nigerian Shock Overlay&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>This is useful when you have NBS data, World Bank series, or any
+other monthly indicator you want to view in the Nigerian macroeconomic
+context.</p>
+<hr />
+</div>
+<div id="plotting-a-derived-measure" class="section level2">
+<h2>5. Plotting a Derived Measure</h2>
+<p><code>plot_inflation_shocks()</code> works naturally after
+<code>derive_measure()</code>. Engineer a feature and pass the result
+straight to the plot function – no extra steps needed.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>infl_gap <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  infl,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">food_gap =</span> food_yoy <span class="sc">-</span> headline_yoy,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">reason   =</span> <span class="st">&quot;Food premium over headline inflation&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">data    =</span> infl_gap,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">val_col =</span> <span class="st">&quot;food_gap&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Food Inflation Premium Over Headline&quot;</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>A positive <code>food_gap</code> means food prices are rising faster
+than the overall basket – a signal of food-specific supply pressure
+rather than broad demand inflation. Plotting this gap against the shock
+markers immediately shows which events triggered food-dominant inflation
+episodes.</p>
+<hr />
+</div>
+<div id="batch-comparison-multiple-metrics" class="section level2">
+<h2>6. Batch Comparison: Multiple Metrics</h2>
+<p><code>par(mfrow)</code> stacks multiple plots in one graphics window.
+This is the fastest way to compare how different components responded to
+the same shock.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>metrics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>, <span class="st">&quot;core_ex_farm_yoy&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>labels  <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="st">&quot;Headline Inflation&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="st">&quot;Food Inflation&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="st">&quot;Core Inflation (Ex-Farm)&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(metrics)) {</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>    <span class="at">data    =</span> infl,</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>    <span class="at">val_col =</span> metrics[i],</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>    <span class="at">title   =</span> labels[i]</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  )</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>}</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))  <span class="co"># always reset the layout after use</span></span></code></pre></div>
+<p><strong>Reading the stacked output:</strong> Align your eyes
+vertically at each shock marker. If food spikes sharply at the 2023
+subsidy removal but core barely moves, the shock was a cost-push supply
+event, not demand-driven. If both spike together, broad inflationary
+pressure is at work. That distinction matters for policy response.</p>
+<hr />
+</div>
+<div id="saving-a-plot-for-a-report" class="section level2">
+<h2>7. Saving a Plot for a Report</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">png</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;nigeria_headline_inflation.png&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">width    =</span> <span class="dv">2400</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">height   =</span> <span class="dv">1500</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">res      =</span> <span class="dv">300</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="fu">plot_inflation_shocks</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">data  =</span> infl,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Nigeria Headline Inflation with Macroeconomic Shocks&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<p>Use <code>pdf()</code> instead of <code>png()</code> for academic
+submissions – PDF is vector-based and scales to any print size without
+losing sharpness.</p>
+<hr />
+<hr />
+</div>
+</div>
+<div id="part-2-plot_inflation" class="section level1">
+<h1>Part 2 – <code>plot_inflation()</code></h1>
+<div id="what-the-function-does-1" class="section level2">
+<h2>What the Function Does</h2>
+<p>Where <code>plot_inflation_shocks()</code> focuses on <em>one</em>
+series and its policy context, <code>plot_inflation()</code> is built
+for <em>comparison</em>. It puts headline, food, and core inflation on
+the same chart using distinct coloured lines, so you can see how the
+three components diverge and converge over time.</p>
+<p>It also supports two measurement types – year-on-year rates and
+12-month averages – giving you a smoothed view of trends alongside the
+raw monthly figures.</p>
+</div>
+<div id="arguments-1" class="section level2">
+<h2>Arguments</h2>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="23%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Type</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>data</code></td>
+<td><code>opennaijR_tbl</code></td>
+<td>required</td>
+<td>Must be an <code>opennaijR_tbl</code> – plain data frames are
+rejected</td>
+</tr>
+<tr class="even">
+<td><code>measure</code></td>
+<td><code>character vector</code></td>
+<td><code>c(&quot;headline&quot;, &quot;food&quot;, &quot;core&quot;)</code></td>
+<td>Which components to include. Pass one, two, or all three</td>
+</tr>
+<tr class="odd">
+<td><code>type</code></td>
+<td><code>character</code></td>
+<td><code>&quot;yoy&quot;</code></td>
+<td>Measurement type: <code>&quot;yoy&quot;</code> for year-on-year or
+<code>&quot;12m&quot;</code> for 12-month average</td>
+</tr>
+<tr class="even">
+<td><code>title</code></td>
+<td><code>character</code></td>
+<td><code>&quot;Nigeria Inflation Trends&quot;</code></td>
+<td>Plot title</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important:</strong> <code>data</code> must be the object
+returned by <code>cbn()</code> – it must carry the
+<code>opennaijR_tbl</code> class. If you pass a plain data frame the
+function stops immediately with a clear error message.</p>
+<hr />
+</div>
+<div id="default-all-three-components" class="section level2">
+<h2>8. Default: All Three Components</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">plot_inflation</span>(infl)</span></code></pre></div>
+<p>All three series – headline, food, and core – are drawn with distinct
+colours and labelled in a legend at the bottom. The y-axis is formatted
+as percentages automatically. The caption credits the CBN as the
+source.</p>
+<hr />
+</div>
+<div id="plotting-a-single-component" class="section level2">
+<h2>9. Plotting a Single Component</h2>
+<p>Pass one value to <code>measure</code> to isolate a single series.
+This is equivalent to <code>plot_inflation_shocks()</code> without the
+shock markers – cleaner for presentation slides where you do not want
+the annotation clutter.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Headline only</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">measure =</span> <span class="st">&quot;headline&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Nigeria Headline Inflation&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Food only</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">measure =</span> <span class="st">&quot;food&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Nigeria Food Inflation&quot;</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="comparing-two-components" class="section level2">
+<h2>10. Comparing Two Components</h2>
+<p>Leave out whichever component is not relevant to your analysis.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Headline vs Core -- useful for monetary policy analysis</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co"># Core strips food and energy, so divergence signals supply-side pressure</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">measure =</span> <span class="fu">c</span>(<span class="st">&quot;headline&quot;</span>, <span class="st">&quot;core&quot;</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Headline vs Core Inflation&quot;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Headline vs Food -- how much is food driving the overall rate?</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">measure =</span> <span class="fu">c</span>(<span class="st">&quot;headline&quot;</span>, <span class="st">&quot;food&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Headline vs Food Inflation&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="switching-to-12-month-averages" class="section level2">
+<h2>11. Switching to 12-Month Averages</h2>
+<p>Year-on-year rates jump around month to month. The 12-month average
+smooths that noise and makes the underlying trend easier to see. Use
+<code>type = &quot;12m&quot;</code> to switch.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Year-on-year -- shows monthly volatility</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">data  =</span> infl,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">type  =</span> <span class="st">&quot;yoy&quot;</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Nigeria Inflation: Year-on-Year&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># 12-month average -- shows the underlying trend</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">data  =</span> infl,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">type  =</span> <span class="st">&quot;12m&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Nigeria Inflation: 12-Month Average&quot;</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>When to choose each:</strong></p>
+<ul>
+<li><code>&quot;yoy&quot;</code> – use when the monthly movement matters, such as
+tracking a recent spike or a sudden drop.</li>
+<li><code>&quot;12m&quot;</code> – use when you want to show the structural trend,
+such as in an annual report or a conference presentation where you do
+not want the audience distracted by monthly noise.</li>
+</ul>
+<hr />
+</div>
+<div id="combining-measure-and-type" class="section level2">
+<h2>12. Combining measure and type</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Smoothed food and core -- structural comparison</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">data    =</span> infl,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">measure =</span> <span class="fu">c</span>(<span class="st">&quot;food&quot;</span>, <span class="st">&quot;core&quot;</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">type    =</span> <span class="st">&quot;12m&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="at">title   =</span> <span class="st">&quot;Food vs Core Inflation: 12-Month Trend&quot;</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="what-happens-when-a-column-is-missing" class="section level2">
+<h2>13. What Happens When a Column is Missing</h2>
+<p><code>plot_inflation()</code> validates the requested columns before
+drawing anything. If a combination of <code>measure</code> and
+<code>type</code> points to a column that does not exist in your
+dataset, it stops and tells you exactly what is missing.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># If &quot;core_ex_farm_12m&quot; does not exist in your dataset:</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">plot_inflation</span>(infl, <span class="at">measure =</span> <span class="st">&quot;core&quot;</span>, <span class="at">type =</span> <span class="st">&quot;12m&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; Error: Requested inflation measure(s) not found in data.</span></span></code></pre></div>
+<p>Check which columns your dataset actually contains with
+<code>names(infl)</code> and confirm the column exists before using
+<code>type = &quot;12m&quot;</code>.</p>
+<hr />
+<hr />
+</div>
+</div>
+<div id="choosing-between-the-two-functions" class="section level1">
+<h1>Choosing Between the Two Functions</h1>
+<table>
+<colgroup>
+<col width="76%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>You want to…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Show one series and highlight when shocks occurred</td>
+<td><code>plot_inflation_shocks()</code></td>
+</tr>
+<tr class="even">
+<td>Compare two or three components on the same chart</td>
+<td><code>plot_inflation()</code></td>
+</tr>
+<tr class="odd">
+<td>Smooth out monthly noise with a rolling average</td>
+<td><code>plot_inflation()</code> with <code>type = &quot;12m&quot;</code></td>
+</tr>
+<tr class="even">
+<td>Use non-CBN data with a Nigerian shock overlay</td>
+<td><code>plot_inflation_shocks()</code> with <code>date_col</code> and
+<code>val_col</code></td>
+</tr>
+<tr class="odd">
+<td>Plot a derived measure (gap, dummy, ratio)</td>
+<td><code>plot_inflation_shocks()</code> after
+<code>derive_measure()</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="workflow-position" class="section level1">
+<h1>Workflow Position</h1>
+<p>Both functions sit at the end of the opennaijR pipeline:</p>
+<pre><code>cbn()  --&gt;  apply_projection()  --&gt;  derive_measure()  --&gt;  plot</code></pre>
+<p><code>apply_projection()</code> and <code>derive_measure()</code> are
+optional steps – you can plot raw <code>cbn()</code> output directly.
+But when your analysis involves derived indicators or a restricted set
+of columns, running those steps first gives you cleaner, more meaningful
+charts.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

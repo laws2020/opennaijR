@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Data Sources</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Data Sources</h1>
+
+
+
+<div id="what-opennaijr-connects-to" class="section level2">
+<h2>What opennaijR Connects To</h2>
+<p>opennaijR does not generate data. It provides a standardised,
+reproducible R interface to official data published by African
+governments, central banks, and national statistics bureaus. Every
+number you retrieve through the package comes directly from an
+authoritative institutional source – no intermediary, no aggregator, no
+third-party estimate.</p>
+<p>The package currently connects to <strong>21 datasets</strong> from
+the Central Bank of Nigeria. The roadmap covers the continent.</p>
+<hr />
+</div>
+<div id="current-coverage-central-bank-of-nigeria-cbn" class="section level2">
+<h2>Current Coverage – Central Bank of Nigeria (CBN)</h2>
+<p>The CBN is the monetary authority of Nigeria and the source of some
+of the most comprehensive macroeconomic data on the African continent.
+All 21 datasets below are accessible through <code>nga_cbn()</code>. Use
+<code>discover_datasets()</code> to see the full list at any time inside
+your R session.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(opennaijR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">discover_datasets</span>()</span></code></pre></div>
+<hr />
+<div id="inflation" class="section level3">
+<h3>Inflation</h3>
+<p><strong>Key:</strong> <code>&quot;inflation_ng&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;inflation&quot;</code>,
+<code>&quot;inflation rates&quot;</code> | <strong>Frequency:</strong> Monthly</p>
+<p>Nigeria’s official consumer price index measures. This is the most
+commonly used dataset in opennaijR for macroeconomic research, policy
+analysis, and teaching.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="54%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>headline_yoy</code></td>
+<td>All-items inflation, year-on-year</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>headline_12m</code></td>
+<td>All-items inflation, 12-month average</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>food_yoy</code></td>
+<td>Food inflation, year-on-year</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>food_12m</code></td>
+<td>Food inflation, 12-month average</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>core_ex_farm_yoy</code></td>
+<td>Core inflation ex-farm produce, year-on-year</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>core_ex_farm_12m</code></td>
+<td>Core inflation ex-farm produce, 12-month average</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>core_ex_farm_energy_yoy</code></td>
+<td>Core ex-farm and energy, year-on-year</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>core_ex_farm_energy_12m</code></td>
+<td>Core ex-farm and energy, 12-month average</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;inflation&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="exchange-rates-official" class="section level3">
+<h3>Exchange Rates (Official)</h3>
+<p><strong>Key:</strong> <code>&quot;exchange_rates&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;forex rates&quot;</code>,
+<code>&quot;cbn fx rates&quot;</code> | <strong>Frequency:</strong> Daily</p>
+<p>Official CBN exchange rates for all traded currencies. Each row is
+one currency on one date.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>currency</code></td>
+<td>Currency pair (grouping variable)</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td><code>buying_rate</code></td>
+<td>CBN official buying rate</td>
+<td>NGN</td>
+</tr>
+<tr class="odd">
+<td><code>central_rate</code></td>
+<td>CBN central rate</td>
+<td>NGN</td>
+</tr>
+<tr class="even">
+<td><code>selling_rate</code></td>
+<td>CBN official selling rate</td>
+<td>NGN</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>exch <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="nfem-exchange-rates" class="section level3">
+<h3>NFEM Exchange Rates</h3>
+<p><strong>Key:</strong> <code>&quot;nfem_exchange_rates&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;nfem&quot;</code> |
+<strong>Frequency:</strong> Daily</p>
+<p>Nigerian Foreign Exchange Market (NFEM) rates – the market-determined
+window rates published daily by the CBN.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>closing</code></td>
+<td>Closing NFEM rate</td>
+<td>NGN</td>
+</tr>
+<tr class="even">
+<td><code>high</code></td>
+<td>Highest rate of the day</td>
+<td>NGN</td>
+</tr>
+<tr class="odd">
+<td><code>low</code></td>
+<td>Lowest rate of the day</td>
+<td>NGN</td>
+</tr>
+<tr class="even">
+<td><code>weighted_avg</code></td>
+<td>Weighted average rate</td>
+<td>NGN</td>
+</tr>
+<tr class="odd">
+<td><code>simple_avg</code></td>
+<td>Simple average rate</td>
+<td>NGN</td>
+</tr>
+<tr class="even">
+<td><code>deals</code></td>
+<td>Number of deals transacted</td>
+<td>Count</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="monthly-average-exchange-rates" class="section level3">
+<h3>Monthly Average Exchange Rates</h3>
+<p><strong>Key:</strong> <code>&quot;monthly_avg_exchange_rates&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;monthly average exchange rate&quot;</code>,
+<code>&quot;average exchange&quot;</code> | <strong>Frequency:</strong>
+Monthly</p>
+<p>Monthly averaged rates for major currency pairs.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ifem_dollar</code></td>
+<td>IFEM USD/NGN average</td>
+<td>NGN/USD</td>
+</tr>
+<tr class="even">
+<td><code>bdc_dollar</code></td>
+<td>Bureau de Change USD/NGN average</td>
+<td>NGN/USD</td>
+</tr>
+<tr class="odd">
+<td><code>pounds</code></td>
+<td>GBP/NGN average</td>
+<td>NGN/GBP</td>
+</tr>
+<tr class="even">
+<td><code>euro</code></td>
+<td>EUR/NGN average</td>
+<td>NGN/EUR</td>
+</tr>
+<tr class="odd">
+<td><code>cfa_franc</code></td>
+<td>CFA franc/NGN average</td>
+<td>NGN/CFA</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="crude-oil-prices" class="section level3">
+<h3>Crude Oil Prices</h3>
+<p><strong>Key:</strong> <code>&quot;crude_oil&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;crude oil&quot;</code>,
+<code>&quot;oil price&quot;</code>, <code>&quot;bonny light&quot;</code> |
+<strong>Frequency:</strong> Monthly</p>
+<p>Nigeria’s Bonny Light crude oil price alongside production and export
+volumes.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="54%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>price_bonny_light</code></td>
+<td>Bonny Light spot price</td>
+<td>USD/barrel</td>
+</tr>
+<tr class="even">
+<td><code>domestic_production</code></td>
+<td>Domestic crude production</td>
+<td>Million barrels/day</td>
+</tr>
+<tr class="odd">
+<td><code>crude_oil_export</code></td>
+<td>Crude oil exports</td>
+<td>Million barrels/day</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>oil <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;crude_oil&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="daily-crude-oil-prices" class="section level3">
+<h3>Daily Crude Oil Prices</h3>
+<p><strong>Key:</strong> <code>&quot;daily_crude_oil&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;daily crude oil&quot;</code>,
+<code>&quot;bonny light daily&quot;</code> | <strong>Frequency:</strong> Daily</p>
+<p>Daily Bonny Light price postings for higher-frequency analysis.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>price_bonny_light</code></td>
+<td>Daily Bonny Light price</td>
+<td>USD/barrel</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="external-reserves" class="section level3">
+<h3>External Reserves</h3>
+<p><strong>Key:</strong> <code>&quot;external_reserves&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;external reserves&quot;</code>,
+<code>&quot;cbn reserves&quot;</code>, <code>&quot;exr&quot;</code> |
+<strong>Frequency:</strong> Daily</p>
+<p>Nigeria’s gross and liquid foreign exchange reserve position,
+published daily.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gross_reserves</code></td>
+<td>Total gross reserves</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><code>liquid_reserves</code></td>
+<td>Liquid (usable) reserves</td>
+<td>USD</td>
+</tr>
+<tr class="odd">
+<td><code>blocked_reserves</code></td>
+<td>Blocked reserves</td>
+<td>USD</td>
+</tr>
+<tr class="even">
+<td><code>blocked_percentage</code></td>
+<td>Blocked as share of gross</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="foreign-exchange-reserves-monthly" class="section level3">
+<h3>Foreign Exchange Reserves (Monthly)</h3>
+<p><strong>Key:</strong> <code>&quot;fx_reserves&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;fx reserves&quot;</code>,
+<code>&quot;forex reserves&quot;</code> | <strong>Frequency:</strong> Monthly</p>
+<p>Monthly reserve position. Complements the daily
+<code>external_reserves</code> series when monthly aggregates are
+sufficient.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>total_reserves</code></td>
+<td>Gross total reserves</td>
+<td>USD Million</td>
+</tr>
+<tr class="even">
+<td><code>liquid_reserves</code></td>
+<td>Liquid reserves</td>
+<td>USD Million</td>
+</tr>
+<tr class="odd">
+<td><code>blocked_reserves</code></td>
+<td>Blocked reserves</td>
+<td>USD Million</td>
+</tr>
+<tr class="even">
+<td><code>blocked_percent</code></td>
+<td>Blocked as share of total</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="money-and-credit-statistics" class="section level3">
+<h3>Money and Credit Statistics</h3>
+<p><strong>Key:</strong> <code>&quot;money_credit&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;money supply&quot;</code>,
+<code>&quot;monetary aggregates&quot;</code>, <code>&quot;credit statistics&quot;</code> |
+<strong>Frequency:</strong> Monthly</p>
+<p>The full monetary survey – money supply aggregates, credit flows, and
+the monetary base. Essential for monetary policy research.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="54%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>broad_money_m3</code></td>
+<td>Broad money M3</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>money_supply_m2</code></td>
+<td>Money supply M2</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>narrow_money</code></td>
+<td>Narrow money M1</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>quasi_money</code></td>
+<td>Quasi money</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>currency_outside_banks</code></td>
+<td>Currency held outside banking system</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>currency_in_circulation</code></td>
+<td>Total currency in circulation</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>bank_reserves</code></td>
+<td>Bank reserves at CBN</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>base_money</code></td>
+<td>Monetary base</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>net_foreign_assets</code></td>
+<td>Net foreign assets</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>net_domestic_assets</code></td>
+<td>Net domestic assets</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>credit_to_government</code></td>
+<td>Credit to government sector</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>credit_to_private_sector</code></td>
+<td>Credit to private sector</td>
+<td>NGN Billion</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>money <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;money_credit&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="money-market-indicators" class="section level3">
+<h3>Money Market Indicators</h3>
+<p><strong>Key:</strong> <code>&quot;money_market&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;interest rates&quot;</code>,
+<code>&quot;cbn policy rates&quot;</code> | <strong>Frequency:</strong>
+Monthly</p>
+<p>CBN policy rates and money market interest rates – the Monetary
+Policy Rate (MPR), treasury bill rate, lending and deposit rates.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>monetary_policy_rate</code></td>
+<td>CBN MPR</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>minimum_rediscount_rate</code></td>
+<td>Minimum Rediscount Rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>interbank_call_rate</code></td>
+<td>Interbank call rate</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>treasury_bill_rate</code></td>
+<td>91-day treasury bill rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>savings_deposit_rate</code></td>
+<td>Savings deposit rate</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>prime_lending_rate</code></td>
+<td>Prime lending rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>maximum_lending_rate</code></td>
+<td>Maximum lending rate</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>deposit_1m_rate</code></td>
+<td>1-month deposit rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>deposit_3m_rate</code></td>
+<td>3-month deposit rate</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>deposit_6m_rate</code></td>
+<td>6-month deposit rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>deposit_12m_rate</code></td>
+<td>12-month deposit rate</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>mkt <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;money_market&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="interbank-rates" class="section level3">
+<h3>Interbank Rates</h3>
+<p><strong>Key:</strong> <code>&quot;interbank_rates&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;inter-bank rates&quot;</code>,
+<code>&quot;obb rate&quot;</code>, <code>&quot;weighted average interbank rate&quot;</code>
+| <strong>Frequency:</strong> Daily</p>
+<p>Daily interbank lending rates by rate type – Open Buy Back (OBB),
+overnight, and weighted averages.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rate_type</code></td>
+<td>Rate category (grouping variable)</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td><code>range</code></td>
+<td>Rate range for the day</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>weighted_average</code></td>
+<td>Weighted average rate</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="discount-rates" class="section level3">
+<h3>Discount Rates</h3>
+<p><strong>Key:</strong> <code>&quot;discount_rates&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;discount windows&quot;</code>,
+<code>&quot;cbn discount rate&quot;</code> | <strong>Frequency:</strong> Daily</p>
+<p>CBN discount window rates by rate type.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rate_type</code></td>
+<td>Window type (grouping variable)</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td><code>discount_rate</code></td>
+<td>Discount rate</td>
+<td>Percent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="nigeria-treasury-bills-ntb" class="section level3">
+<h3>Nigeria Treasury Bills (NTB)</h3>
+<p><strong>Key:</strong> <code>&quot;ntb_cbn&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;ntb&quot;</code>,
+<code>&quot;nigeria treasury bills&quot;</code> | <strong>Frequency:</strong>
+Auction dates</p>
+<p>Results of CBN treasury bill auctions – amounts offered,
+subscriptions, stop rates, and true yields.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>security_type</code></td>
+<td>Bill type (grouping variable)</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td><code>tenor</code></td>
+<td>Maturity tenor</td>
+<td>–</td>
+</tr>
+<tr class="odd">
+<td><code>amt_offered</code></td>
+<td>Amount offered at auction</td>
+<td>NGN Million</td>
+</tr>
+<tr class="even">
+<td><code>total_subscription</code></td>
+<td>Total subscriptions received</td>
+<td>NGN Million</td>
+</tr>
+<tr class="odd">
+<td><code>total_successful</code></td>
+<td>Total successful bids</td>
+<td>NGN Million</td>
+</tr>
+<tr class="even">
+<td><code>rate</code></td>
+<td>Stop / cut-off rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>true_yield</code></td>
+<td>True yield</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>net_value</code></td>
+<td>Net value</td>
+<td>NGN Million</td>
+</tr>
+<tr class="odd">
+<td><code>total_amt_repaid</code></td>
+<td>Total amount repaid</td>
+<td>NGN Million</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="fgn-bonds" class="section level3">
+<h3>FGN Bonds</h3>
+<p><strong>Key:</strong> <code>&quot;fgn_bond&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;fgn bond&quot;</code>,
+<code>&quot;fgn bonds&quot;</code>, <code>&quot;nigeria fgn bond&quot;</code> |
+<strong>Frequency:</strong> Auction dates</p>
+<p>Federal Government of Nigeria bond auction results – the primary
+market for long-dated government debt. Columns mirror the NTB auction
+structure, grouped by <code>security_type</code> and
+<code>tenor</code>.</p>
+<hr />
+</div>
+<div id="omo-securities" class="section level3">
+<h3>OMO Securities</h3>
+<p><strong>Key:</strong> <code>&quot;omo&quot;</code> | <strong>Aliases:</strong>
+<code>&quot;omo&quot;</code>, <code>&quot;open market operation&quot;</code> |
+<strong>Frequency:</strong> Auction dates</p>
+<p>Open Market Operation bill auction results – the CBN’s primary tool
+for managing banking system liquidity. Columns mirror the NTB auction
+structure.</p>
+<hr />
+</div>
+<div id="cbn-securities" class="section level3">
+<h3>CBN Securities</h3>
+<p><strong>Key:</strong> <code>&quot;cbn_sec&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;cbn securities&quot;</code>,
+<code>&quot;cbn bills&quot;</code>, <code>&quot;cbn certificates&quot;</code> |
+<strong>Frequency:</strong> Historical</p>
+<p>CBN-issued bill auction results. Columns mirror the NTB auction
+structure.</p>
+<hr />
+</div>
+<div id="government-securities-consolidated" class="section level3">
+<h3>Government Securities (Consolidated)</h3>
+<p><strong>Key:</strong> <code>&quot;securities&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;government securities&quot;</code>,
+<code>&quot;treasury bills auctions&quot;</code> | <strong>Frequency:</strong>
+Auction dates</p>
+<p>A consolidated view of all government security auctions – NTB, FGN
+Bonds, OMO, and CBN Bills in a single dataset.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>amount_offered</code></td>
+<td>Amount offered</td>
+<td>NGN Million</td>
+</tr>
+<tr class="even">
+<td><code>total_subscription</code></td>
+<td>Total subscriptions</td>
+<td>NGN Million</td>
+</tr>
+<tr class="odd">
+<td><code>total_successful</code></td>
+<td>Total successful bids</td>
+<td>NGN Million</td>
+</tr>
+<tr class="even">
+<td><code>stop_rate</code></td>
+<td>Stop / cut-off rate</td>
+<td>Percent</td>
+</tr>
+<tr class="odd">
+<td><code>true_yield</code></td>
+<td>True yield</td>
+<td>Percent</td>
+</tr>
+<tr class="even">
+<td><code>net_value</code></td>
+<td>Net value</td>
+<td>NGN Million</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="cbn-financial-and-liquidity-operations" class="section level3">
+<h3>CBN Financial and Liquidity Operations</h3>
+<p><strong>Key:</strong> <code>&quot;financial_data&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;financial data&quot;</code>,
+<code>&quot;liquidity operations&quot;</code> | <strong>Frequency:</strong>
+Daily</p>
+<p>Daily CBN balance sheet liquidity flows – the operational detail
+behind monetary policy implementation. Covers standing facilities, repo,
+OMO, CRR, and statutory allocations.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>opening_balance</code></td>
+<td>Opening system balance</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>standing_lending</code></td>
+<td>Standing Lending Facility</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>standing_deposit</code></td>
+<td>Standing Deposit Facility</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>repo</code></td>
+<td>Repo operations</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>reverse_repo</code></td>
+<td>Reverse repo operations</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>omo_sales</code></td>
+<td>OMO sales</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>omo_repayment</code></td>
+<td>OMO repayments</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>cash_reserve_ratio</code></td>
+<td>CRR debits</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>statutory_allocation</code></td>
+<td>FAAC statutory allocations</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>net_clearing</code></td>
+<td>Net clearing</td>
+<td>NGN Billion</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="gdp-by-sector-annual-supply-side" class="section level3">
+<h3>GDP by Sector (Annual, Supply-side)</h3>
+<p><strong>Key:</strong> <code>&quot;gdp_ng&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;gdp&quot;</code>,
+<code>&quot;gdp by sector&quot;</code>, <code>&quot;sectoral gdp&quot;</code> |
+<strong>Frequency:</strong> Annual</p>
+<p>Annual nominal GDP broken down by sector at current basic prices –
+the most granular sectoral breakdown available from the CBN. Covers
+agriculture, industry, manufacturing, utilities, construction, and all
+services sub-sectors.</p>
+<p>Major aggregate columns:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gdp_basic_price</code></td>
+<td>GDP at current basic prices</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>gdp_market_price</code></td>
+<td>GDP at current market prices</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>agriculture</code></td>
+<td>Agricultural sector total</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>industry</code></td>
+<td>Industrial sector total</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>manufacturing</code></td>
+<td>Manufacturing sub-sector</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>services</code></td>
+<td>Services sector total</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>construction</code></td>
+<td>Construction</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>crude_oil_gas</code></td>
+<td>Crude petroleum and natural gas</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>finance_insurance</code></td>
+<td>Finance and insurance</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>telecoms</code></td>
+<td>Telecommunications</td>
+<td>NGN Billion</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>gdp <span class="ot">&lt;-</span> <span class="fu">nga_cbn</span>(<span class="st">&quot;gdp_ng&quot;</span>, <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="nominal-gdp-quarterly" class="section level3">
+<h3>Nominal GDP (Quarterly)</h3>
+<p><strong>Key:</strong> <code>&quot;nominal_gdp&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;nominal gdp&quot;</code>,
+<code>&quot;gdp current basic prices&quot;</code> | <strong>Frequency:</strong>
+Quarterly</p>
+<p>Quarterly nominal GDP at current basic prices with sectoral
+breakdown. Complements <code>gdp_ng</code> for higher-frequency GDP
+analysis.</p>
+<hr />
+</div>
+<div id="international-payments" class="section level3">
+<h3>International Payments</h3>
+<p><strong>Key:</strong> <code>&quot;international_payments&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;int payments&quot;</code>,
+<code>&quot;foreign payments&quot;</code> | <strong>Frequency:</strong> Annual</p>
+<p>Nigeria’s international payment flows – letters of credit,
+remittances, and debt service.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>letters_of_credit</code></td>
+<td>Letters of credit issued</td>
+<td>USD Million</td>
+</tr>
+<tr class="even">
+<td><code>direct_remittances</code></td>
+<td>Direct remittances</td>
+<td>USD Million</td>
+</tr>
+<tr class="odd">
+<td><code>debt_service</code></td>
+<td>External debt service payments</td>
+<td>USD Million</td>
+</tr>
+<tr class="even">
+<td><code>total_payments</code></td>
+<td>Total international payments</td>
+<td>USD Million</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="cbn-assets-and-liabilities" class="section level3">
+<h3>CBN Assets and Liabilities</h3>
+<p><strong>Key:</strong> <code>&quot;assets_liabilities&quot;</code> |
+<strong>Aliases:</strong> <code>&quot;cbn balance sheet&quot;</code>,
+<code>&quot;central bank balance sheet&quot;</code> | <strong>Frequency:</strong>
+Annual</p>
+<p>The CBN’s full balance sheet – assets (gold, foreign reserves,
+government securities, advances) and liabilities (capital, deposits,
+currency in circulation) going back to the pre-1972 historical
+series.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>What it measures</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>total_assets</code></td>
+<td>Total CBN assets</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>gold</code></td>
+<td>Gold holdings</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>convertible_foreign</code></td>
+<td>Convertible foreign assets</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>federal_govt_securities</code></td>
+<td>FGN securities held</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>currency_in_circulation</code></td>
+<td>Currency in circulation</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>government_deposits</code></td>
+<td>Government deposits at CBN</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="odd">
+<td><code>bankers_deposits</code></td>
+<td>Commercial bank deposits at CBN</td>
+<td>NGN Billion</td>
+</tr>
+<tr class="even">
+<td><code>total_liabilities</code></td>
+<td>Total CBN liabilities</td>
+<td>NGN Billion</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+</div>
+<div id="complete-dataset-index" class="section level2">
+<h2>Complete Dataset Index</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># See all datasets with keys and descriptions</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">discover_datasets</span>()</span></code></pre></div>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="44%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Description</th>
+<th>Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>inflation_ng</code></td>
+<td>Consumer price inflation</td>
+<td>Monthly</td>
+</tr>
+<tr class="even">
+<td><code>exchange_rates</code></td>
+<td>Official exchange rates (all currencies)</td>
+<td>Daily</td>
+</tr>
+<tr class="odd">
+<td><code>nfem_exchange_rates</code></td>
+<td>NFEM market rates</td>
+<td>Daily</td>
+</tr>
+<tr class="even">
+<td><code>monthly_avg_exchange_rates</code></td>
+<td>Monthly average exchange rates</td>
+<td>Monthly</td>
+</tr>
+<tr class="odd">
+<td><code>crude_oil</code></td>
+<td>Bonny Light price and production</td>
+<td>Monthly</td>
+</tr>
+<tr class="even">
+<td><code>daily_crude_oil</code></td>
+<td>Daily Bonny Light price</td>
+<td>Daily</td>
+</tr>
+<tr class="odd">
+<td><code>external_reserves</code></td>
+<td>External reserves position</td>
+<td>Daily</td>
+</tr>
+<tr class="even">
+<td><code>fx_reserves</code></td>
+<td>Foreign exchange reserves</td>
+<td>Monthly</td>
+</tr>
+<tr class="odd">
+<td><code>money_credit</code></td>
+<td>Money supply and credit aggregates</td>
+<td>Monthly</td>
+</tr>
+<tr class="even">
+<td><code>money_market</code></td>
+<td>Policy and money market rates</td>
+<td>Monthly</td>
+</tr>
+<tr class="odd">
+<td><code>interbank_rates</code></td>
+<td>Daily interbank rates</td>
+<td>Daily</td>
+</tr>
+<tr class="even">
+<td><code>discount_rates</code></td>
+<td>CBN discount window rates</td>
+<td>Daily</td>
+</tr>
+<tr class="odd">
+<td><code>ntb_cbn</code></td>
+<td>Nigeria Treasury Bill auctions</td>
+<td>Auction dates</td>
+</tr>
+<tr class="even">
+<td><code>fgn_bond</code></td>
+<td>FGN Bond auctions</td>
+<td>Auction dates</td>
+</tr>
+<tr class="odd">
+<td><code>omo</code></td>
+<td>Open Market Operation auctions</td>
+<td>Auction dates</td>
+</tr>
+<tr class="even">
+<td><code>cbn_sec</code></td>
+<td>CBN Bill auctions</td>
+<td>Historical</td>
+</tr>
+<tr class="odd">
+<td><code>securities</code></td>
+<td>All government securities (consolidated)</td>
+<td>Auction dates</td>
+</tr>
+<tr class="even">
+<td><code>financial_data</code></td>
+<td>CBN liquidity operations</td>
+<td>Daily</td>
+</tr>
+<tr class="odd">
+<td><code>gdp_ng</code></td>
+<td>Annual GDP by sector</td>
+<td>Annual</td>
+</tr>
+<tr class="even">
+<td><code>nominal_gdp</code></td>
+<td>Quarterly nominal GDP</td>
+<td>Quarterly</td>
+</tr>
+<tr class="odd">
+<td><code>international_payments</code></td>
+<td>International payment flows</td>
+<td>Annual</td>
+</tr>
+<tr class="even">
+<td><code>assets_liabilities</code></td>
+<td>CBN balance sheet</td>
+<td>Annual</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="data-principles" class="section level2">
+<h2>Data Principles</h2>
+<p><strong>Official sources only.</strong> Every dataset is retrieved
+directly from the CBN’s own data infrastructure. No third-party
+aggregators, scraped mirrors, or unofficial compilations are used.</p>
+<p><strong>No manipulation of values.</strong> opennaijR does not alter
+statistical figures. All transformations are limited to cleaning column
+names, parsing dates, and reshaping to tidy format.</p>
+<p><strong>Full reproducibility.</strong> Every retrieval is scriptable
+and produces the same result when run against the same source
+publication.</p>
+<p><strong>Attribution.</strong> Data remains the intellectual property
+of the Central Bank of Nigeria. Users should cite the CBN as the data
+source in published academic or professional work, not opennaijR.</p>
+<hr />
+</div>
+<div id="nigeria-expansion-roadmap" class="section level2">
+<h2>Nigeria Expansion Roadmap</h2>
+<p>Additional Nigerian institutions targeted for connection:</p>
+<p><strong>National Bureau of Statistics (NBS)</strong> – Consumer Price
+Index at state level, quarterly and annual GDP, labour force statistics,
+trade data, and poverty indicators. The NBS is the primary source for
+subnational and household-level analysis.</p>
+<p><strong>Nigerian Exchange Group (NGX)</strong> – Equity prices,
+market indices, trading volumes, and corporate actions for publicly
+listed companies.</p>
+<hr />
+</div>
+<div id="africa-expansion-roadmap" class="section level2">
+<h2>Africa Expansion Roadmap</h2>
+<p>When Nigerian coverage is complete, opennaijR will expand to central
+banks and statistics bureaus across Africa following the same
+<code>country_code_institution</code> naming convention:</p>
+<p><strong>West Africa:</strong> Bank of Ghana (<code>gha_bog</code>),
+BCEAO covering eight CFA franc countries (<code>xof_bceao</code>).</p>
+<p><strong>East Africa:</strong> Central Bank of Kenya
+(<code>ken_cbk</code>), Bank of Tanzania (<code>tza_bot</code>), Bank of
+Uganda (<code>uga_bou</code>), National Bank of Rwanda
+(<code>rwa_bnr</code>).</p>
+<p><strong>Southern Africa:</strong> South African Reserve Bank
+(<code>zaf_sarb</code>), Bank of Zambia (<code>zmb_boz</code>).</p>
+<p><strong>North Africa:</strong> Central Bank of Egypt
+(<code>egy_cbe</code>), Bank Al-Maghrib Morocco
+(<code>mar_bam</code>).</p>
+<p>See the Contributing article if you have knowledge of any of these
+sources and would like to help build a connector.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

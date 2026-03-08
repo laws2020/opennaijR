@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Lawrence Garba" />
+
+
+<title>Feature Engineering with derive_measure()</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Feature Engineering with
+derive_measure()</h1>
+<h4 class="author">Lawrence Garba</h4>
+
+
+
+<div id="what-is-derive_measure" class="section level2">
+<h2>What is <code>derive_measure()</code>?</h2>
+<p>The CBN dataset gives you raw figures — year-on-year inflation rates,
+exchange rate quotes, money supply totals. <code>derive_measure()</code>
+lets you turn those raw figures into <em>analytically meaningful</em>
+quantities: gaps, ratios, regime flags, rolling trends, and anything
+else you can express as an R expression.</p>
+<p>The key design principle is that you write your formula directly
+inside the function call, referencing column names as bare variable
+names — no <code>$</code>, no <code>[[]]</code>. The function evaluates
+each expression against the dataset and appends the result as a new
+column. The original columns are always preserved.</p>
+<p>Every derived measure is logged in a <code>derive_manifest</code>
+attribute for reproducibility.</p>
+<hr />
+</div>
+<div id="input-and-output" class="section level2">
+<h2>Input and Output</h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="20%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Type</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.data</code></td>
+<td><code>data.frame</code> / <code>opennaijR_tbl</code></td>
+<td>Your dataset (raw or projected)</td>
+</tr>
+<tr class="even">
+<td><code>...</code></td>
+<td>Named expressions</td>
+<td><code>new_col_name = &lt;expression&gt;</code> — one per derived
+measure</td>
+</tr>
+<tr class="odd">
+<td><code>reason</code></td>
+<td><code>character scalar</code></td>
+<td>Optional label stored in the manifest</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output:</strong> The same dataset with one new column
+appended per expression. The class and all existing columns are
+untouched. A <code>derive_manifest</code> attribute is added (or
+appended if one already exists).</p>
+<hr />
+</div>
+<div id="simple-arithmetic-differences" class="section level2">
+<h2>1. Simple Arithmetic Differences</h2>
+<p>The most common use: compute the gap between two indicators.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(opennaijR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;inflation&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># How far is headline above food inflation in each period?</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>infl_gap <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  infl,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">gap_headline_food =</span> headline_yoy <span class="sc">-</span> food_yoy</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">head</span>(infl_gap[, <span class="fu">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;headline_yoy&quot;</span>, <span class="st">&quot;food_yoy&quot;</span>, <span class="st">&quot;gap_headline_food&quot;</span>)])</span></code></pre></div>
+<p>The new column <code>gap_headline_food</code> appears at the right of
+the data frame. Everything else is unchanged.</p>
+<hr />
+</div>
+<div id="percentage-shares-and-ratios" class="section level2">
+<h2>2. Percentage Shares and Ratios</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># What fraction of headline inflation is food-driven?</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>infl_share <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  infl,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">food_share_pct =</span> (food_yoy <span class="sc">/</span> headline_yoy) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># How does core compare to headline?</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>infl_ratio <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  infl,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="at">core_to_headline =</span> core_ex_farm_yoy <span class="sc">/</span> headline_yoy</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>)</span></code></pre></div>
+<blockquote>
+<p><strong>Note on division by zero:</strong> If
+<code>headline_yoy</code> is ever zero, the ratio will produce
+<code>Inf</code> or <code>NaN</code>. <code>derive_measure()</code>
+automatically converts both to <code>NA</code> so your downstream
+analysis is not silently corrupted.</p>
+</blockquote>
+<hr />
+</div>
+<div id="absolute-values" class="section level2">
+<h2>3. Absolute Values</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>infl_abs <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  infl,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">abs_gap =</span> <span class="fu">abs</span>(headline_yoy <span class="sc">-</span> core_ex_farm_yoy)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>Use absolute gaps when you care about magnitude, not direction.</p>
+<hr />
+</div>
+<div id="time-series-transformations-with-lag" class="section level2">
+<h2>4. Time-Series Transformations with <code>lag()</code></h2>
+<p><code>lag()</code> shifts a column back by one period, giving you the
+previous observation. This is the foundation of all momentum and change
+indicators.</p>
+<div id="month-to-month-change" class="section level3">
+<h3>Month-to-month change</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>infl_mom <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  infl,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">headline_change =</span> headline_yoy <span class="sc">-</span> <span class="fu">lag</span>(headline_yoy)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="percentage-growth-rate" class="section level3">
+<h3>Percentage growth rate</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>infl_growth <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  infl,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">headline_growth_pct =</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    (headline_yoy <span class="sc">-</span> <span class="fu">lag</span>(headline_yoy)) <span class="sc">/</span> <span class="fu">lag</span>(headline_yoy) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="year-on-year-delta-12-month-lag" class="section level3">
+<h3>Year-on-year delta (12-month lag)</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>infl_annual_delta <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  infl,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">annual_delta =</span> headline_yoy <span class="sc">-</span> <span class="fu">lag</span>(headline_yoy, <span class="dv">12</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>lag(x, n)</code> shifts by <code>n</code> periods, so
+<code>lag(headline_yoy, 12)</code> gives you the value from twelve
+months ago.</p>
+<hr />
+</div>
+</div>
+<div id="rolling-averages" class="section level2">
+<h2>5. Rolling Averages</h2>
+<p>If <code>rollmean()</code> from the <code>zoo</code> package is
+available in your environment:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>infl_roll <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  infl,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">headline_3m_avg =</span> <span class="fu">rollmean</span>(headline_yoy, <span class="at">k =</span> <span class="dv">3</span>, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">&quot;right&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>The <code>fill = NA</code> argument ensures the first two rows (where
+a 3-month window cannot be formed) are <code>NA</code> rather than
+dropped.</p>
+<hr />
+</div>
+<div id="boolean-dummy-variables" class="section level2">
+<h2>6. Boolean / Dummy Variables</h2>
+<p>Any expression that returns <code>TRUE</code> or <code>FALSE</code>
+becomes an indicator column — very useful for dashboards, filtering, and
+regression dummy variables.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Is inflation accelerating this period compared to last?</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>infl_accel <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  infl,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">accelerating =</span> headline_yoy <span class="sc">&gt;</span> <span class="fu">lag</span>(headline_yoy)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co"># Is food inflation the dominant driver?</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>infl_food_driven <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  infl,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="at">food_dominant =</span> food_yoy <span class="sc">&gt;</span> headline_yoy</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="conditional-classification-with-ifelse" class="section level2">
+<h2>7. Conditional Classification with <code>ifelse()</code></h2>
+<p>Use nested <code>ifelse()</code> to build regime categories.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>infl_regime <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  infl,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">inflation_class =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    headline_yoy <span class="sc">&lt;</span> <span class="dv">0</span>,  <span class="st">&quot;Deflation&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="fu">ifelse</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>      headline_yoy <span class="sc">&lt;=</span> <span class="dv">5</span>,  <span class="st">&quot;Low&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>      <span class="fu">ifelse</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>        headline_yoy <span class="sc">&lt;=</span> <span class="dv">15</span>, <span class="st">&quot;Moderate&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>        <span class="st">&quot;High&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>      )</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    )</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  ),</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Three-level inflation regime classification&quot;</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Reading the logic step by step:</strong></p>
+<ul>
+<li>If <code>headline_yoy &lt; 0</code> → <code>&quot;Deflation&quot;</code></li>
+<li>Else if <code>headline_yoy &lt;= 5</code> → <code>&quot;Low&quot;</code></li>
+<li>Else if <code>headline_yoy &lt;= 15</code> →
+<code>&quot;Moderate&quot;</code></li>
+<li>Else → <code>&quot;High&quot;</code></li>
+</ul>
+<p>The same pattern scales to as many levels as you need.</p>
+<hr />
+</div>
+<div id="numeric-regime-codes-for-regression-models" class="section level2">
+<h2>8. Numeric Regime Codes (for Regression Models)</h2>
+<p>Statistical models often require numeric encoding rather than
+character labels.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>infl_regime_num <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  infl,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">regime_code =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    headline_yoy <span class="sc">&lt;</span> <span class="dv">0</span>,   <span class="dv">0</span><span class="dt">L</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="fu">ifelse</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>      headline_yoy <span class="sc">&lt;=</span> <span class="dv">5</span>,  <span class="dv">1</span><span class="dt">L</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>      <span class="fu">ifelse</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>        headline_yoy <span class="sc">&lt;=</span> <span class="dv">15</span>, <span class="dv">2</span><span class="dt">L</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>        <span class="dv">3</span><span class="dt">L</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>      )</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    )</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  ),</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Numeric regime encoding for regression&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>)</span></code></pre></div>
+<p>Now <code>regime_code</code> takes values 0, 1, 2, or 3 and can be
+used directly in <code>lm()</code> or <code>glm()</code>.</p>
+<hr />
+</div>
+<div id="creating-multiple-measures-in-one-call" class="section level2">
+<h2>9. Creating Multiple Measures in One Call</h2>
+<p>You are not limited to one expression. Pass as many named expressions
+as you like — they are computed in order, so a later expression can
+reference an earlier derived column.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>infl_decomp <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  infl,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">gap            =</span> headline_yoy <span class="sc">-</span> core_ex_farm_yoy,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">food_pressure  =</span> food_yoy     <span class="sc">-</span> core_ex_farm_yoy,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">accelerating   =</span> headline_yoy <span class="sc">&gt;</span> <span class="fu">lag</span>(headline_yoy),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">high_regime    =</span> headline_yoy <span class="sc">&gt;</span> <span class="dv">15</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">reason         =</span> <span class="st">&quot;Full structural decomposition for policy brief&quot;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>)</span></code></pre></div>
+<p>One function call, four new columns, one manifest entry.</p>
+<hr />
+</div>
+<div id="chaining-calls-manifest-accumulation" class="section level2">
+<h2>10. Chaining Calls (Manifest Accumulation)</h2>
+<p>Just as with <code>apply_projection()</code>, you can pipe the output
+of one <code>derive_measure()</code> call into the next. Each call adds
+an entry to the manifest.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>step1 <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  infl,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">gap =</span> headline_yoy <span class="sc">-</span> food_yoy,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Compute baseline gap&quot;</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>step2 <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  step1,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="at">gap_change =</span> gap <span class="sc">-</span> <span class="fu">lag</span>(gap),</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Measure whether gap is widening&quot;</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>)</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co"># Both derivation steps are recorded</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>manifest <span class="ot">&lt;-</span> <span class="fu">attr</span>(step2, <span class="st">&quot;derive_manifest&quot;</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>expressions  <span class="co"># step 1 expressions</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>manifest[[<span class="dv">2</span>]]<span class="sc">$</span>expressions  <span class="co"># step 2 expressions</span></span></code></pre></div>
+<hr />
+</div>
+<div id="inspecting-the-manifest" class="section level2">
+<h2>11. Inspecting the Manifest</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>infl_features <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  infl,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">gap   =</span> headline_yoy <span class="sc">-</span> food_yoy,</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">share =</span> (food_yoy <span class="sc">/</span> headline_yoy) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Replication of 2025 inflation study&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>manifest <span class="ot">&lt;-</span> <span class="fu">attr</span>(infl_features, <span class="st">&quot;derive_manifest&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>timestamp    <span class="co"># Exact time the function ran</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>expressions  <span class="co"># The R expressions that were evaluated</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>manifest[[<span class="dv">1</span>]]<span class="sc">$</span>reason       <span class="co"># Your label</span></span></code></pre></div>
+<p>This is your proof of work. A collaborator or journal reviewer can
+inspect the manifest and verify exactly what was computed and when.</p>
+<hr />
+</div>
+<div id="pipe-friendly-usage" class="section level2">
+<h2>12. Pipe-Friendly Usage</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>model_ready <span class="ot">&lt;-</span> infl <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">derive_measure</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">gap        =</span> headline_yoy <span class="sc">-</span> core_ex_farm_yoy,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">accel      =</span> headline_yoy <span class="sc">-</span> <span class="fu">lag</span>(headline_yoy),</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">high_regime =</span> headline_yoy <span class="sc">&gt;</span> <span class="dv">15</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="at">reason     =</span> <span class="st">&quot;Feature set for regression model&quot;</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  )</span></code></pre></div>
+<hr />
+</div>
+<div id="exchange-rate-feature-engineering" class="section level2">
+<h2>13. Exchange Rate Feature Engineering</h2>
+<p><code>derive_measure()</code> works on any
+<code>opennaijR_tbl</code>, not just inflation data.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>exchange <span class="ot">&lt;-</span> <span class="fu">cbn</span>(<span class="st">&quot;exchange_rates&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>exchange_features <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  exchange,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">spread       =</span> selling_rate <span class="sc">-</span> buying_rate,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="at">mid_rate     =</span> (buying_rate <span class="sc">+</span> selling_rate) <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="at">buying_pct   =</span> (buying_rate <span class="sc">-</span> <span class="fu">lag</span>(buying_rate)) <span class="sc">/</span> <span class="fu">lag</span>(buying_rate) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  <span class="at">depreciation =</span> buying_rate <span class="sc">&gt;</span> <span class="fu">lag</span>(buying_rate),</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="at">movement     =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>    buying_rate <span class="sc">&gt;</span> <span class="fu">lag</span>(buying_rate), <span class="st">&quot;Depreciation&quot;</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>    <span class="fu">ifelse</span>(buying_rate <span class="sc">&lt;</span> <span class="fu">lag</span>(buying_rate), <span class="st">&quot;Appreciation&quot;</span>, <span class="st">&quot;Stable&quot;</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>  ),</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Exchange rate feature engineering&quot;</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>)</span></code></pre></div>
+<p>In a single call you have: spread, mid-market rate, percentage
+change, a boolean flag, and a character classification.</p>
+<hr />
+</div>
+<div id="cross-dataset-features" class="section level2">
+<h2>14. Cross-Dataset Features</h2>
+<p>After merging inflation and exchange rate data, you can derive
+indicators that combine both sources.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>infl_std    <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(infl,     <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;date&quot;</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>exchange_std <span class="ot">&lt;-</span> <span class="fu">apply_projection</span>(exchange, <span class="at">rename =</span> <span class="fu">c</span>(<span class="at">Date =</span> <span class="st">&quot;ratedate&quot;</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>macro <span class="ot">&lt;-</span> <span class="fu">merge</span>(infl_std, exchange_std, <span class="at">by =</span> <span class="st">&quot;Date&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>macro_features <span class="ot">&lt;-</span> <span class="fu">derive_measure</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  macro,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  <span class="at">real_exchange_change =</span> buying_pct <span class="sc">-</span> headline_yoy,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  <span class="at">reason =</span> <span class="st">&quot;Compare currency depreciation against inflation&quot;</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
+</div>
+<div id="error-and-edge-cases" class="section level2">
+<h2>15. Error and Edge Cases</h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No expressions provided</td>
+<td>A warning is issued; data is returned unchanged</td>
+</tr>
+<tr class="even">
+<td>Expression produces <code>Inf</code> or <code>NaN</code></td>
+<td>Automatically converted to <code>NA</code></td>
+</tr>
+<tr class="odd">
+<td>Column name referenced in expression does not exist</td>
+<td>Standard R evaluation error naming the missing object</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+<div id="workflow-position" class="section level2">
+<h2>Workflow Position</h2>
+<p><code>derive_measure()</code> sits immediately after
+<code>apply_projection()</code> in the opennaijR pipeline:</p>
+<pre><code>cbn()  →  apply_projection()  →  derive_measure()  →  analysis / modeling</code></pre>
+<p><code>apply_projection()</code> gives you a clean schema;
+<code>derive_measure()</code> gives you analytically rich features.
+Together they transform a raw API response into a research-ready
+dataset.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

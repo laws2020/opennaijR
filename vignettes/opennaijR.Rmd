@@ -145,7 +145,7 @@ You now have the data stored in:
 
 When you run:
 
-```{r behind_scene, warning=FALSE, eval=FALSE}
+```{r behind_scene, warning=FALSE}
 cbn("exchange_rates")
 ```
 
@@ -229,7 +229,7 @@ Think of it as:
 
 First, suppose we already fetched exchange rates:
 
-```{r exchange_rates_fetch, eval=FALSE}
+```{r exchange_rates_fetch}
 exchange_rates <- cbn("exchange_rates")
 ```
 
