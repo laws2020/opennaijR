@@ -155,7 +155,7 @@ exchange_rates <- cbn("exchange_rates")
 
     ## Applying canonicalization using 'standardize_cbn_exchange'
 
-    ## Creating new version '20260308T125736Z-37aa1'
+    ## Creating new version '20260311T092816Z-59fdf'
     ## Writing to pin 'cbn__exchange_rates__d305a3e522e5ccc56286e414cfd231cd'
 
 That’s it.
@@ -175,19 +175,19 @@ cbn("exchange_rates")
     ## 📦 Loading cached CBN data from pins
 
     ## <opennaijR table>
-    ## Rows: 60449  Columns: 5 
+    ## Rows: 60475  Columns: 5 
     ## 
     ##              currency buying_rate central_rate selling_rate       date
-    ## 1                 CFA      2.4365       2.4465       2.4565 2026-03-06
-    ## 2       YUAN/RENMINBI    201.5717     201.6441     201.7165 2026-03-06
-    ## 3        DANISH KRONA    215.4961     215.5735     215.6509 2026-03-06
-    ## 4                EURO   1610.2828    1610.8611    1611.4394 2026-03-06
-    ## 5                 YEN      8.8168       8.8199       8.8231 2026-03-06
-    ## 6               RIYAL    370.9318     371.0651     371.1983 2026-03-06
-    ## 7  SOUTH AFRICAN RAND     83.4325      83.4625      83.4925 2026-03-06
-    ## 8                 SDR   1900.2897    1900.9721    1901.6546 2026-03-06
-    ## 9         SWISS FRANC   1779.6953    1780.3344    1780.9735 2026-03-06
-    ## 10    POUNDS STERLING   1858.6612    1859.3287    1859.9962 2026-03-06
+    ## 1                 CFA      2.4334       2.4434       2.4534 2026-03-10
+    ## 2       YUAN/RENMINBI    203.6118     203.6845     203.7572 2026-03-10
+    ## 3        DANISH KRONA    216.8610     216.9384     217.0158 2026-03-10
+    ## 4                EURO   1630.3473    1630.9294    1631.5115 2026-03-10
+    ## 5                 YEN      8.8768       8.8800       8.8831 2026-03-10
+    ## 6               RIYAL    373.1220     373.2552     373.3884 2026-03-10
+    ## 7  SOUTH AFRICAN RAND     84.1239      84.1539      84.1839 2026-03-10
+    ## 8                 SDR   1906.9826    1907.6635    1908.3443 2026-03-10
+    ## 9         SWISS FRANC   1806.2703    1806.9153    1807.5602 2026-03-10
+    ## 10    POUNDS STERLING   1884.3801    1885.0529    1885.7257 2026-03-10
 
 opennaijR automatically:
 
@@ -215,23 +215,23 @@ cbn("exchange_rates", variables = c("currency", "buying_rate"))
 
     ## Applying canonicalization using 'standardize_cbn_exchange'
 
-    ## Creating new version '20260308T125738Z-6563a'
+    ## Creating new version '20260311T092818Z-580a9'
     ## Writing to pin 'cbn__exchange_rates__3be8261f4f13056b9a63ec5304c99646'
 
     ## <opennaijR table>
-    ## Rows: 60449  Columns: 2 
+    ## Rows: 60475  Columns: 2 
     ## 
     ##              currency buying_rate
-    ## 1                 CFA      2.4365
-    ## 2       YUAN/RENMINBI    201.5717
-    ## 3        DANISH KRONA    215.4961
-    ## 4                EURO   1610.2828
-    ## 5                 YEN      8.8168
-    ## 6               RIYAL    370.9318
-    ## 7  SOUTH AFRICAN RAND     83.4325
-    ## 8                 SDR   1900.2897
-    ## 9         SWISS FRANC   1779.6953
-    ## 10    POUNDS STERLING   1858.6612
+    ## 1                 CFA      2.4334
+    ## 2       YUAN/RENMINBI    203.6118
+    ## 3        DANISH KRONA    216.8610
+    ## 4                EURO   1630.3473
+    ## 5                 YEN      8.8768
+    ## 6               RIYAL    373.1220
+    ## 7  SOUTH AFRICAN RAND     84.1239
+    ## 8                 SDR   1906.9826
+    ## 9         SWISS FRANC   1806.2703
+    ## 10    POUNDS STERLING   1884.3801
 
 #### Select a date range:
 
@@ -243,23 +243,23 @@ cbn("exchange_rates", from = "2020-01-01", to = "2023-12-31")
 
     ## Applying canonicalization using 'standardize_cbn_exchange'
 
-    ## Creating new version '20260308T125739Z-37aa1'
+    ## Creating new version '20260311T092819Z-59fdf'
     ## Writing to pin 'cbn__exchange_rates__2e6bdf4cdb0fbe97c9a08bf8ce123481'
 
     ## <opennaijR table>
-    ## Rows: 60449  Columns: 5 
+    ## Rows: 60475  Columns: 5 
     ## 
     ##              currency buying_rate central_rate selling_rate       date
-    ## 1                 CFA      2.4365       2.4465       2.4565 2026-03-06
-    ## 2       YUAN/RENMINBI    201.5717     201.6441     201.7165 2026-03-06
-    ## 3        DANISH KRONA    215.4961     215.5735     215.6509 2026-03-06
-    ## 4                EURO   1610.2828    1610.8611    1611.4394 2026-03-06
-    ## 5                 YEN      8.8168       8.8199       8.8231 2026-03-06
-    ## 6               RIYAL    370.9318     371.0651     371.1983 2026-03-06
-    ## 7  SOUTH AFRICAN RAND     83.4325      83.4625      83.4925 2026-03-06
-    ## 8                 SDR   1900.2897    1900.9721    1901.6546 2026-03-06
-    ## 9         SWISS FRANC   1779.6953    1780.3344    1780.9735 2026-03-06
-    ## 10    POUNDS STERLING   1858.6612    1859.3287    1859.9962 2026-03-06
+    ## 1                 CFA      2.4334       2.4434       2.4534 2026-03-10
+    ## 2       YUAN/RENMINBI    203.6118     203.6845     203.7572 2026-03-10
+    ## 3        DANISH KRONA    216.8610     216.9384     217.0158 2026-03-10
+    ## 4                EURO   1630.3473    1630.9294    1631.5115 2026-03-10
+    ## 5                 YEN      8.8768       8.8800       8.8831 2026-03-10
+    ## 6               RIYAL    373.1220     373.2552     373.3884 2026-03-10
+    ## 7  SOUTH AFRICAN RAND     84.1239      84.1539      84.1839 2026-03-10
+    ## 8                 SDR   1906.9826    1907.6635    1908.3443 2026-03-10
+    ## 9         SWISS FRANC   1806.2703    1806.9153    1807.5602 2026-03-10
+    ## 10    POUNDS STERLING   1884.3801    1885.0529    1885.7257 2026-03-10
 
 ### Summary
 
@@ -377,12 +377,12 @@ head(usd_rates)
     ## Rows: 6  Columns: 5 
     ## 
     ##          date  currency   buying  central  selling
-    ## 11 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256
-    ## 24 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447
-    ## 37 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095
-    ## 50 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292
-    ## 63 2026-03-02 US DOLLAR 1377.025 1377.525 1378.025
-    ## 75 2026-02-27 US DOLLAR 1362.395 1362.895 1363.395
+    ## 11 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401
+    ## 24 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256
+    ## 37 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256
+    ## 50 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447
+    ## 63 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095
+    ## 76 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292
 
 Now your dataset is:
 
@@ -408,7 +408,7 @@ attr(usd_rates, "projection_manifest")
 
     ## [[1]]
     ## [[1]]$timestamp
-    ## [1] "2026-03-08 12:57:39 UTC"
+    ## [1] "2026-03-11 09:28:19 UTC"
     ## 
     ## [[1]]$action
     ## [1] "apply_projection"
@@ -508,12 +508,12 @@ head(usd_change)
     ## Rows: 6  Columns: 6 
     ## 
     ##          date  currency   buying  central  selling pct_change
-    ## 11 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256          0
-    ## 24 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447          0
-    ## 37 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095          0
-    ## 50 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292          0
-    ## 63 2026-03-02 US DOLLAR 1377.025 1377.525 1378.025          0
-    ## 75 2026-02-27 US DOLLAR 1362.395 1362.895 1363.395          0
+    ## 11 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401          0
+    ## 24 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256          0
+    ## 37 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256          0
+    ## 50 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447          0
+    ## 63 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095          0
+    ## 76 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292          0
 
 You now have:
 
@@ -541,7 +541,7 @@ attr(usd_change, "derive_manifest")
 
     ## [[1]]
     ## [[1]]$timestamp
-    ## [1] "2026-03-08 12:57:39 UTC"
+    ## [1] "2026-03-11 09:28:19 UTC"
     ## 
     ## [[1]]$action
     ## [1] "derive_measure"

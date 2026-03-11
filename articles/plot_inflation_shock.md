@@ -60,7 +60,7 @@ library(opennaijR)
 infl <- cbn("inflation")
 #> Fetching raw data from 'https://www.cbn.gov.ng/api/GetAllInflationRates' ...
 #> Applying canonicalization using 'standardize_cbn_inflation'
-#> Creating new version '20260308T125742Z-6b8dc'
+#> Creating new version '20260311T092822Z-6b8dc'
 #> Writing to pin 'cbn__inflation__d305a3e522e5ccc56286e414cfd231cd'
 
 plot_inflation_shocks(infl)
