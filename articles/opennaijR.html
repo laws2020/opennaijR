@@ -246,7 +246,7 @@ CBN), you can combine source and dataset.</p>
 <code class="sourceCode R"><span><span class="va">exchange_rates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cbn.html">cbn</a></span><span class="op">(</span><span class="st">"exchange_rates"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Fetching raw data from 'https://www.cbn.gov.ng/api/GetAllExchangeRates' ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying canonicalization using 'standardize_cbn_exchange'</span></span></code></pre>
-<pre><code><span><span class="co">## Creating new version '20260311T092816Z-59fdf'</span></span>
+<pre><code><span><span class="co">## Creating new version '20260312T181854Z-39670'</span></span>
 <span><span class="co">## Writing to pin 'cbn__exchange_rates__d305a3e522e5ccc56286e414cfd231cd'</span></span></code></pre>
 <p>That’s it.</p>
 <p>You now have the data stored in:</p>
@@ -259,19 +259,19 @@ CBN), you can combine source and dataset.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cbn.html">cbn</a></span><span class="op">(</span><span class="st">"exchange_rates"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 📦 Loading cached CBN data from pins</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;opennaijR table&gt;</span></span>
-<span><span class="co">## Rows: 60475  Columns: 5 </span></span>
+<span><span class="co">## Rows: 60500  Columns: 5 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##              currency buying_rate central_rate selling_rate       date</span></span>
-<span><span class="co">## 1                 CFA      2.4334       2.4434       2.4534 2026-03-10</span></span>
-<span><span class="co">## 2       YUAN/RENMINBI    203.6118     203.6845     203.7572 2026-03-10</span></span>
-<span><span class="co">## 3        DANISH KRONA    216.8610     216.9384     217.0158 2026-03-10</span></span>
-<span><span class="co">## 4                EURO   1630.3473    1630.9294    1631.5115 2026-03-10</span></span>
-<span><span class="co">## 5                 YEN      8.8768       8.8800       8.8831 2026-03-10</span></span>
-<span><span class="co">## 6               RIYAL    373.1220     373.2552     373.3884 2026-03-10</span></span>
-<span><span class="co">## 7  SOUTH AFRICAN RAND     84.1239      84.1539      84.1839 2026-03-10</span></span>
-<span><span class="co">## 8                 SDR   1906.9826    1907.6635    1908.3443 2026-03-10</span></span>
-<span><span class="co">## 9         SWISS FRANC   1806.2703    1806.9153    1807.5602 2026-03-10</span></span>
-<span><span class="co">## 10    POUNDS STERLING   1884.3801    1885.0529    1885.7257 2026-03-10</span></span></code></pre>
+<span><span class="co">## 1                 CFA      2.4088       2.4188       2.4288 2026-03-12</span></span>
+<span><span class="co">## 2       YUAN/RENMINBI    199.5205     199.5933     199.6661 2026-03-12</span></span>
+<span><span class="co">## 3        DANISH KRONA    211.5044     211.5816     211.6587 2026-03-12</span></span>
+<span><span class="co">## 4                EURO   1580.7420    1581.3187    1581.8954 2026-03-12</span></span>
+<span><span class="co">## 5                 YEN      8.6201       8.6232       8.6264 2026-03-12</span></span>
+<span><span class="co">## 6               RIYAL    365.1859     365.3192     365.4524 2026-03-12</span></span>
+<span><span class="co">## 7  SOUTH AFRICAN RAND     82.3226      82.3526      82.3826 2026-03-12</span></span>
+<span><span class="co">## 8         SWISS FRANC   1751.6696    1752.3087    1752.9477 2026-03-12</span></span>
+<span><span class="co">## 9     POUNDS STERLING   1833.4633    1834.1322    1834.8011 2026-03-12</span></span>
+<span><span class="co">## 10          US DOLLAR   1370.5063    1371.0063    1371.5063 2026-03-12</span></span></code></pre>
 <p>opennaijR automatically:</p>
 <ol style="list-style-type: decimal">
 <li>Builds a data request</li>
@@ -294,22 +294,22 @@ CBN), you can combine source and dataset.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cbn.html">cbn</a></span><span class="op">(</span><span class="st">"exchange_rates"</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"currency"</span>, <span class="st">"buying_rate"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Fetching raw data from 'https://www.cbn.gov.ng/api/GetAllExchangeRates' ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying canonicalization using 'standardize_cbn_exchange'</span></span></code></pre>
-<pre><code><span><span class="co">## Creating new version '20260311T092818Z-580a9'</span></span>
+<pre><code><span><span class="co">## Creating new version '20260312T181855Z-3b08f'</span></span>
 <span><span class="co">## Writing to pin 'cbn__exchange_rates__3be8261f4f13056b9a63ec5304c99646'</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;opennaijR table&gt;</span></span>
-<span><span class="co">## Rows: 60475  Columns: 2 </span></span>
+<span><span class="co">## Rows: 60500  Columns: 2 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##              currency buying_rate</span></span>
-<span><span class="co">## 1                 CFA      2.4334</span></span>
-<span><span class="co">## 2       YUAN/RENMINBI    203.6118</span></span>
-<span><span class="co">## 3        DANISH KRONA    216.8610</span></span>
-<span><span class="co">## 4                EURO   1630.3473</span></span>
-<span><span class="co">## 5                 YEN      8.8768</span></span>
-<span><span class="co">## 6               RIYAL    373.1220</span></span>
-<span><span class="co">## 7  SOUTH AFRICAN RAND     84.1239</span></span>
-<span><span class="co">## 8                 SDR   1906.9826</span></span>
-<span><span class="co">## 9         SWISS FRANC   1806.2703</span></span>
-<span><span class="co">## 10    POUNDS STERLING   1884.3801</span></span></code></pre>
+<span><span class="co">## 1                 CFA      2.4088</span></span>
+<span><span class="co">## 2       YUAN/RENMINBI    199.5205</span></span>
+<span><span class="co">## 3        DANISH KRONA    211.5044</span></span>
+<span><span class="co">## 4                EURO   1580.7420</span></span>
+<span><span class="co">## 5                 YEN      8.6201</span></span>
+<span><span class="co">## 6               RIYAL    365.1859</span></span>
+<span><span class="co">## 7  SOUTH AFRICAN RAND     82.3226</span></span>
+<span><span class="co">## 8         SWISS FRANC   1751.6696</span></span>
+<span><span class="co">## 9     POUNDS STERLING   1833.4633</span></span>
+<span><span class="co">## 10          US DOLLAR   1370.5063</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="select-a-date-range">Select a date range:<a class="anchor" aria-label="anchor" href="#select-a-date-range"></a>
@@ -318,22 +318,22 @@ CBN), you can combine source and dataset.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cbn.html">cbn</a></span><span class="op">(</span><span class="st">"exchange_rates"</span>, from <span class="op">=</span> <span class="st">"2020-01-01"</span>, to <span class="op">=</span> <span class="st">"2023-12-31"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Fetching raw data from 'https://www.cbn.gov.ng/api/GetAllExchangeRates' ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying canonicalization using 'standardize_cbn_exchange'</span></span></code></pre>
-<pre><code><span><span class="co">## Creating new version '20260311T092819Z-59fdf'</span></span>
+<pre><code><span><span class="co">## Creating new version '20260312T181857Z-39670'</span></span>
 <span><span class="co">## Writing to pin 'cbn__exchange_rates__2e6bdf4cdb0fbe97c9a08bf8ce123481'</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;opennaijR table&gt;</span></span>
-<span><span class="co">## Rows: 60475  Columns: 5 </span></span>
+<span><span class="co">## Rows: 60500  Columns: 5 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##              currency buying_rate central_rate selling_rate       date</span></span>
-<span><span class="co">## 1                 CFA      2.4334       2.4434       2.4534 2026-03-10</span></span>
-<span><span class="co">## 2       YUAN/RENMINBI    203.6118     203.6845     203.7572 2026-03-10</span></span>
-<span><span class="co">## 3        DANISH KRONA    216.8610     216.9384     217.0158 2026-03-10</span></span>
-<span><span class="co">## 4                EURO   1630.3473    1630.9294    1631.5115 2026-03-10</span></span>
-<span><span class="co">## 5                 YEN      8.8768       8.8800       8.8831 2026-03-10</span></span>
-<span><span class="co">## 6               RIYAL    373.1220     373.2552     373.3884 2026-03-10</span></span>
-<span><span class="co">## 7  SOUTH AFRICAN RAND     84.1239      84.1539      84.1839 2026-03-10</span></span>
-<span><span class="co">## 8                 SDR   1906.9826    1907.6635    1908.3443 2026-03-10</span></span>
-<span><span class="co">## 9         SWISS FRANC   1806.2703    1806.9153    1807.5602 2026-03-10</span></span>
-<span><span class="co">## 10    POUNDS STERLING   1884.3801    1885.0529    1885.7257 2026-03-10</span></span></code></pre>
+<span><span class="co">## 1                 CFA      2.4088       2.4188       2.4288 2026-03-12</span></span>
+<span><span class="co">## 2       YUAN/RENMINBI    199.5205     199.5933     199.6661 2026-03-12</span></span>
+<span><span class="co">## 3        DANISH KRONA    211.5044     211.5816     211.6587 2026-03-12</span></span>
+<span><span class="co">## 4                EURO   1580.7420    1581.3187    1581.8954 2026-03-12</span></span>
+<span><span class="co">## 5                 YEN      8.6201       8.6232       8.6264 2026-03-12</span></span>
+<span><span class="co">## 6               RIYAL    365.1859     365.3192     365.4524 2026-03-12</span></span>
+<span><span class="co">## 7  SOUTH AFRICAN RAND     82.3226      82.3526      82.3826 2026-03-12</span></span>
+<span><span class="co">## 8         SWISS FRANC   1751.6696    1752.3087    1752.9477 2026-03-12</span></span>
+<span><span class="co">## 9     POUNDS STERLING   1833.4633    1834.1322    1834.8011 2026-03-12</span></span>
+<span><span class="co">## 10          US DOLLAR   1370.5063    1371.0063    1371.5063 2026-03-12</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -491,12 +491,12 @@ want</strong>
 <span><span class="co">## Rows: 6  Columns: 5 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##          date  currency   buying  central  selling</span></span>
-<span><span class="co">## 11 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401</span></span>
-<span><span class="co">## 24 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256</span></span>
-<span><span class="co">## 37 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256</span></span>
-<span><span class="co">## 50 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447</span></span>
-<span><span class="co">## 63 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095</span></span>
-<span><span class="co">## 76 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292</span></span></code></pre>
+<span><span class="co">## 10 2026-03-12 US DOLLAR 1370.506 1371.006 1371.506</span></span>
+<span><span class="co">## 23 2026-03-11 US DOLLAR 1375.193 1375.693 1376.193</span></span>
+<span><span class="co">## 36 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401</span></span>
+<span><span class="co">## 49 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256</span></span>
+<span><span class="co">## 62 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256</span></span>
+<span><span class="co">## 75 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447</span></span></code></pre>
 <p>Now your dataset is:</p>
 <ul>
 <li>Focused (USD only)</li>
@@ -517,7 +517,7 @@ history</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">usd_rates</span>, <span class="st">"projection_manifest"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
 <span><span class="co">## [[1]]$timestamp</span></span>
-<span><span class="co">## [1] "2026-03-11 09:28:19 UTC"</span></span>
+<span><span class="co">## [1] "2026-03-12 18:18:57 UTC"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[1]]$action</span></span>
 <span><span class="co">## [1] "apply_projection"</span></span>
@@ -626,12 +626,12 @@ period.</p>
 <span><span class="co">## Rows: 6  Columns: 6 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##          date  currency   buying  central  selling pct_change</span></span>
-<span><span class="co">## 11 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401          0</span></span>
-<span><span class="co">## 24 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256          0</span></span>
-<span><span class="co">## 37 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256          0</span></span>
-<span><span class="co">## 50 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447          0</span></span>
-<span><span class="co">## 63 2026-03-04 US DOLLAR 1386.095 1386.595 1387.095          0</span></span>
-<span><span class="co">## 76 2026-03-03 US DOLLAR 1383.292 1383.792 1384.292          0</span></span></code></pre>
+<span><span class="co">## 10 2026-03-12 US DOLLAR 1370.506 1371.006 1371.506          0</span></span>
+<span><span class="co">## 23 2026-03-11 US DOLLAR 1375.193 1375.693 1376.193          0</span></span>
+<span><span class="co">## 36 2026-03-10 US DOLLAR 1400.401 1400.901 1401.401          0</span></span>
+<span><span class="co">## 49 2026-03-09 US DOLLAR 1392.256 1392.756 1393.256          0</span></span>
+<span><span class="co">## 62 2026-03-06 US DOLLAR 1392.256 1392.756 1393.256          0</span></span>
+<span><span class="co">## 75 2026-03-05 US DOLLAR 1386.447 1386.947 1387.447          0</span></span></code></pre>
 <p>You now have:</p>
 <ul>
 <li>Original exchange rate columns</li>
@@ -652,7 +652,7 @@ created cat(“705 Done!”) Stores your reason</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">usd_change</span>, <span class="st">"derive_manifest"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
 <span><span class="co">## [[1]]$timestamp</span></span>
-<span><span class="co">## [1] "2026-03-11 09:28:19 UTC"</span></span>
+<span><span class="co">## [1] "2026-03-12 18:18:57 UTC"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## [[1]]$action</span></span>
 <span><span class="co">## [1] "derive_measure"</span></span>
